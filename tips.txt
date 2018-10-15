@@ -1,0 +1,37 @@
+father(X,Y) :-
+	parent(X,Y),
+	male(X).
+
+termos:
+	-número
+	-átomos - começa com letra minúscula ou entre pelicas (')
+	-variáveis - começa com maiúscula, começar com _ (->existe algum valor? quando usado com o underscore).
+	-termos compostos - coords(3,2), p.ex, ou então 3-2 (se não especificado que é uma subtração)
+
+
+	/= -> diferente
+	/+ -> negação
+	
+	+ -> entrada
+	- -> saída (deve ser deixado como variável)
+	? -> tanto faz
+
+read(X). -> requires enter
+get_code(X), X=97 || get_char(X), X=a --> gotta get rid of line feed after
+
+write(X)
+write('ola') -> ola
+write("ola") -> [111, 109, 97]
+
+format(...)
+
+put_code(X).
+put_char(X).
+
+
+//=====================
+:-use_module(library(lists)).
+
+secção 11.3
+       10.21
+
