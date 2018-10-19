@@ -76,6 +76,16 @@ print_cell(C):-
 	write(V),
 	put_code(0x2003).
 
+top_number([L|_], N):-
+	print_top_number(L, N).
+
+print_top_number(_, 0):- nl.
+print_top_number([_|L], N):-
+	write('  '),
+	write(N),
+	write(' '),
+	N1 is N - 1, 
+	print_top_number([_|L], N1).
 
 top_wall([L|_]):-
 	put_code(0x250F),
@@ -112,8 +122,9 @@ print_bot_last([_|L]):-
 
 
 display(Board, Player):-
-	top_wall(Board),
 	length(Board, N),
+	top_number(Board, N),
+	top_wall(Board),
 	print_tab(Board, N),
 	bot_wall(Board).
 
