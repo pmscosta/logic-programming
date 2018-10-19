@@ -1,8 +1,8 @@
 :- use_module(library(lists)).
 
-translate(0, ' ').
-translate(1, 'W').
-translate(2, 'B').
+translate(0, 0x2003).
+translate(1, 0xFFEE).
+translate(2, 0xFFED).
 
 div_line_bold:-
 	put_code(0x2501),
@@ -33,22 +33,19 @@ tab_end([[0, 0, 0, 1, 0],
 	[0, 2, 1, 2, 0], 
 	[0, 0, 0, 0, 0]]).
 
-random_tab([[0, 0, 1, 2],
-	   [0, 0, 1]]).
+write_ident(A):-
+	write(A),
+	write(' ').
 
 print_tab([]).
 print_tab([L|T], 1):-
-	write(1), 
-	write(' '),	
+	write_ident(1),	
 	print_line(L),
-	nl,
 	print_tab(T).
 
 print_tab([L|T], N):-
-	write(N), 
-	write(' '),
+	write_ident(N),
 	print_line(L),
-	nl,
 	N > 0,
 	print_hor_div(L),
 	N1 is N - 1,
@@ -60,19 +57,21 @@ print_hor_div(L):-
 	print_div(L),
 	nl.
 
-print_div([]).
-print_div([_|[]]):- 
+print_div_line(C):-
 	div_line,
-	put_code(0x2524),
+	put_code(C).
+
+print_div([]).
+print_div([_|[]]):-
+	print_div_line(0x2524), 
 	print_div([]).
 print_div([_|L]):-
-	div_line,
-	put_code(0x253C),
+	print_div_line(0x253C),
 	print_div(L).
 
 
 print_line([]):- 
-	put_code(0x2502).
+	put_code(0x2502), nl.
 print_line([C|L]):-
 	print_cell(C),
 	print_line(L).
@@ -80,7 +79,7 @@ print_cell(C):-
 	translate(C, V),
 	put_code(0x2502),
 	put_code(0x2003),
-	write(V),
+	put_code(V),
 	put_code(0x2003).
 
 top_number([L|_], N):-
