@@ -32,15 +32,21 @@ tab_end([[0, 0, 0, 1, 0],
 	[0, 0, 1, 0, 0],
 	[0, 2, 1, 2, 0], 
 	[0, 0, 0, 0, 0]]).
-    
+
+random_tab([[0, 0, 1, 2],
+	   [0, 0, 1]]).
 
 print_tab([]).
 print_tab([L|T], 1):-
+	write(1), 
+	write(' '),	
 	print_line(L),
 	nl,
 	print_tab(T).
 
 print_tab([L|T], N):-
+	write(N), 
+	write(' '),
 	print_line(L),
 	nl,
 	N > 0,
@@ -49,6 +55,7 @@ print_tab([L|T], N):-
 	print_tab(T, N1).
 
 print_hor_div(L):-
+	write('  '),
 	put_code(0x251C),
 	print_div(L),
 	nl.
@@ -77,17 +84,21 @@ print_cell(C):-
 	put_code(0x2003).
 
 top_number([L|_], N):-
-	print_top_number(L, N).
-
-print_top_number(_, 0):- nl.
-print_top_number([_|L], N):-
 	write('  '),
-	write(N),
+	A is 0x41,
+	print_top_number(L, N, A).
+
+print_top_number(_, 0, _):- nl.
+print_top_number([_|L], N, A):-
+	write('  '),
+	put_code(A),
 	write(' '),
 	N1 is N - 1, 
-	print_top_number([_|L], N1).
+	A1 is A + 1, 
+	print_top_number([_|L], N1, A1).
 
 top_wall([L|_]):-
+	write('  '),
 	put_code(0x250F),
 	print_top_wall(L).
 
@@ -104,11 +115,13 @@ print_top_last([_|L]):-
 	print_top_wall(L).
 
 
-bot_wall([L|_]):-
+bot_wall([L|_], N):-
+	write('  '),
 	put_code(0x2517),
-	print_bot_wall(L).
+	print_bot_wall(L),
+	top_number(Board, N).
 
-print_bot_wall([]).
+print_bot_wall([]):- nl.
 print_bot_wall([_|L]):-
 	div_line_bold,
 	print_bot_last([_|L]).
@@ -123,10 +136,9 @@ print_bot_last([_|L]):-
 
 display(Board, Player):-
 	length(Board, N),
-	top_number(Board, N),
 	top_wall(Board),
 	print_tab(Board, N),
-	bot_wall(Board).
+	bot_wall(Board, N).
 
 main:- 
 	tab(Tab),
