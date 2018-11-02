@@ -13,26 +13,6 @@ div_line:-
 	put_code(0x2500),
 	put_code(0x2500).
 
-
-
-tab([[0, 1, 0, 1, 0],
-    [0, 0, 2, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0],
-    [0, 2, 0, 2, 0]]).
-
-tab_mid([[0, 0, 0, 1, 0],
-	[0, 0, 2, 0, 0],
-	[0, 0, 0, 0, 0],
-	[0, 0, 1, 0, 0], 
-	[2, 1, 0, 0, 2]]).
-
-tab_end([[0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 2],
-	[0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0], 
-	[2, 1, 1, 1, 2]]).
-
 write_ident(A):-
 	write(A),
 	write(' ').
@@ -133,18 +113,8 @@ print_bot_last([_|L]):-
 	print_bot_wall(L).
 
 
-display(Board, Player):-
+display_board(Board):-
 	length(Board, N),
 	top_wall(Board),
 	print_tab(Board, N),
 	bot_wall(Board, N).
-
-main:- 
-	tab(Tab),
-	tab_mid(MidTab),
-	tab_end(EndTab),
-	display(Tab, P),
-	nl,
-	display(MidTab, P),
-	nl, 
-	display(EndTab, P).
