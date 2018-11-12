@@ -56,4 +56,6 @@ movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 	checkBoundaries(NextRow, BoardLength),
 	checkBoundaries(NextCol, BoardLength),
 	getPiece(NextRow, NextCol, Board, NextPiece), 
-	NextPiece = 0 -> movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength) ; replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
+	( NextPiece = 0; NextPiece = 0, NextRow = 0, NextCol = 0; NextCol = BoardLength, NextRow = BoardLength, NextPiece = 0 )
+				-> movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength) ; 
+					replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
