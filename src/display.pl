@@ -112,7 +112,10 @@ print_bot_last([_|L]):-
 	put_code(0x2537),
 	print_bot_wall(L).
 
+/**
 
+
+**/
 display_board(Board):-
 	length(Board, N),
 	top_wall(Board),

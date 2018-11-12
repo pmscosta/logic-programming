@@ -35,3 +35,44 @@ put_char(X).
 secção 11.3
        10.21
 
+//=====================
+dynamic - secção 4.12
+
+
+//=====================
+
+functor(Termo, Nome, Aridade). 
+
+-->functor(ligado(a,b), N, A). 
+	N = ligado, A = 2. 
+
+-->functor(T, ligado, 2). 
+	T = ligado(_, _).
+
+arg(Num, Termo, Vel).  
+
+-->arg(2, ligado(a,b), V).
+	V = b.
+
+
+Termo = ..Lista
+
+-->ligado(a,b) = ..[ligado, a, b].
+	ligado(a,b) = ..L.
+	T = ..[execbla, a, 2, X], T.  (a chamada ao último T aplica-o)
+	T = execbla(a, 2, X).
+
+
+//======================
+
+:- op(Prec, Type, Nome).
+	Prec - 1...1200
+	Type - {
+				fx, fy -> Prefix,   (tipo negação)
+				xf, yf -> Postfix,	(tipo ++ em C)
+				xfx, yfx, xfy -> Infix	(tipo soma)
+			}
+	x - mom-assoc
+	y - side-assoc
+
+xfx -> não pode ter operadores filhos do mesmo nível

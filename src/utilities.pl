@@ -17,24 +17,32 @@ A = 1, B = 2, and so on.
 **/
 getCoordFromAscii(X):-
 	get_code(Temp),
-	X is Temp - 97, 
-    get_code(_).
+	X is Temp - 97.
 
 /**
 askUserInput(-X, -Y, +N).
 Asks for User Input coordinates. 
 Translates visual coordinates into the internal ones used in the list.
-@param X - the x coordinate (visually a number)
-@param Y - the y coordinate (visually a letter)
+@param Row - the row
+@param Col - the column
 @param N - the board length
 **/
-askUserInput(X, Y, N):-
+askUserInput(Row, Col, N):-
     write(' Insert the piece coordinates: '),
 	getCoordFromInt(Temp),
-	X is N - Temp,
-	getCoordFromAscii(Y),
+	Row is N - Temp,
+	getCoordFromAscii(Col),
     get_code(_).
 
+
+askUserMove(X):-
+	write(' Insert the move direction: '), 
+	read(X),
+	get_code(_).
+
+
+waitForKeyPress:-
+	get_code(_).
 
 invalidMove:-
     write('Invalid Coordinates!'), nl.

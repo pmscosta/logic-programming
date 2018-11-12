@@ -3,18 +3,22 @@
 :- include('display.pl').
 :- include('boardCreator.pl').
 :- include('boardManipulation.pl').
+:- include('menus.pl').
 
+
+startGame:-
+	tab(Tab),
+	Player is 1,
+	playGame(Tab, Player).
 
 playGame(Tab, Player):-
-	tab(Tab),
 	length(Tab, N),
 	display_board(Tab),
-	askUserInput(X, Y, N),
-	get(X, Y, Tab, Elem),
-	write(Elem), nl,
-	playGame(Tab, Player).
+	askUserInput(Row, Col, N),
+	askUserMove(Move),
+	getPiece(Row, Col, Tab, Piece),
+	movePiece(Row, Col, Move, Piece, Tab, OutTab),
+	playGame(OutTab, Player).
 
 main:- 
-	tab(Tab),
-	playGame(Tab, Player).
-
+	mainMenu.
