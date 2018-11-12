@@ -59,3 +59,26 @@ movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 	( NextPiece = 0; NextPiece = 0, NextRow = 0, NextCol = 0; NextCol = BoardLength, NextRow = BoardLength, NextPiece = 0 )
 				-> movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength) ; 
 					replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
+
+
+getRowN([H|_], 0, H):- !.
+getRowN([_|T], N, X) :-
+	N1 is N - 1, 
+	getRowN(T, N1, X).
+
+getColumnN([], _, []).
+getColumnN([H|T], N, [R|X]):-
+	getRowN(H, N, R),
+	getColumnN(T, N, X).
+
+
+
+getDiagonal(Board, Diagonal, Offset):-
+	length(Board, K), 
+	N is K - 1,
+	write('before'), nl,
+	findall(B, (between(Offset, N, I), nth0(I, Board, Row), I2 is I - Offset, nth0(I2, Row, B)), Diagonal),
+	write('after'), nl.
+
+sublist( Sublist, List ) :-
+    append( [_, Sublist, _], List ).
