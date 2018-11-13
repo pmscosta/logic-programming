@@ -39,8 +39,11 @@ getPiece(Row, Col, Board, Elem):-
 
 checkBoundaries(Position, Lenght):-
 	LengthArray is Lenght - 1, 
-	Position < 0 -> Position = 0, !;
-	Position @> LengthArray -> Position = LengthArray, !.
+	(
+		Position < 0, Position = 0, !;
+		Position > LengthArray, Position = LengthArray, !;
+		true
+	).
 
 
 movePiece(Row, Col, Move, Piece, Board, OutBoard):-
@@ -76,9 +79,7 @@ getColumnN([H|T], N, [R|X]):-
 getDiagonal(Board, Diagonal, Offset):-
 	length(Board, K), 
 	N is K - 1,
-	write('before'), nl,
-	findall(B, (between(Offset, N, I), nth0(I, Board, Row), I2 is I - Offset, nth0(I2, Row, B)), Diagonal),
-	write('after'), nl.
+	findall(B, (between(Offset, N, I), nth0(I, Board, Row), I2 is I - Offset, nth0(I2, Row, B)), Diagonal).
 
 sublist( Sublist, List ) :-
     append( [_, Sublist, _], List ).

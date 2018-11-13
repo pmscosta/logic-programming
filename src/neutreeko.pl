@@ -25,7 +25,6 @@ checkBiggerDiagonals(Board, Length):-
 	K is Length - 2,
 	between(0, K, Offset), 
 	getDiagonal(Board, Diagonal, Offset), 
-	nl, write(Diagonal), nl,
 	isConnected(0, Diagonal). 
 
 
