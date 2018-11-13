@@ -48,6 +48,7 @@ playGame(Tab, Player):-
 	askUserInput(Row, Col, N),
 	askUserMove(Move),
 	getPiece(Row, Col, Tab, Piece),
+	valid_move(Tab,Player,Row,Col,Move,Piece),
 	movePiece(Row, Col, Move, Piece, Tab, OutTab),
 	( checkVictory(Player, OutTab, N) -> wonGame(Player); true ), 
 	NPlayer is Player + 1,

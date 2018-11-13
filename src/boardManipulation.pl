@@ -63,6 +63,22 @@ movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 				-> movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength) ; 
 					replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
 
+checkEmpty(Board,NextRow,NextCol):-
+	getPiece(NextRow, NextCol, Board, NextPiece), 
+	NextPiece=:=0.
+
+valid_move(Board,Player,Row,Col,Move, Piece):-
+	Piece =:= (Player + 1),
+	colTranslate(Move, MoveCol),
+	rowTranslate(Move, MoveRow),
+	NextRow = (Row + MoveRow), 
+	NextCol = (Col + MoveCol), 
+	checkBoundaries(NextRow, BoardLength),
+	checkBoundaries(NextCol, BoardLength),
+	checkEmpty(Board,NextRow,NextCol). 
+
+	
+
 
 getRowN([H|_], 0, H):- !.
 getRowN([_|T], N, X) :-
