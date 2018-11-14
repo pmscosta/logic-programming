@@ -59,25 +59,42 @@ movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 	checkBoundaries(NextRow, BoardLength),
 	checkBoundaries(NextCol, BoardLength),
 	getPiece(NextRow, NextCol, Board, NextPiece), 
-	( NextPiece = 0; NextPiece = 0, NextRow = 0, NextCol = 0; NextCol = BoardLength, NextRow = BoardLength, NextPiece = 0 )
-				-> movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength) ; 
-					replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
+	NextPiece = 0 -> movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength);
+					 replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
 
 checkEmpty(Board,NextRow,NextCol):-
 	getPiece(NextRow, NextCol, Board, NextPiece), 
 	NextPiece=:=0.
 
 valid_move(Board,Player,Row,Col,Move, Piece):-
+	between(1, 9, Move),
+	Move \= 5,
 	Piece =:= (Player + 1),
 	colTranslate(Move, MoveCol),
 	rowTranslate(Move, MoveRow),
-	NextRow = (Row + MoveRow), 
-	NextCol = (Col + MoveCol), 
+	NextRow is Row + MoveRow, 
+	NextCol is Col + MoveCol, 
+	length(Board, BoardLength),
 	checkBoundaries(NextRow, BoardLength),
 	checkBoundaries(NextCol, BoardLength),
 	checkEmpty(Board,NextRow,NextCol). 
 
-	
+
+valid_moves(Board, Player, MovesList):-
+	NPiece is Player + 1, 
+	findall([Row, Col, Move], ( getPiece(Row, Col, Board, NPiece), valid_move(Board, Player, Row, Col, Move, NPiece)), MovesList).
+
+move_and_evaluate(Board, Player, MovesList):-
+	length(Board, N),
+	K is N - 1, 
+	NPiece is Player + 1, 
+	findall([Value, Row, Col, Move],( getPiece(Row, Col, Board, NPiece), 
+								valid_move(Board, Player, Row, Col, Move, NPiece), 
+								movePiece(Row, Col, Move, NPiece, Board, OutTab),
+								evaluateBoard(OutTab, Player, Value, K)), Moves),
+	sort(Moves, TempMoves),
+	reverse(TempMoves, MovesList).
+					
 
 
 getRowN([H|_], 0, H):- !.
