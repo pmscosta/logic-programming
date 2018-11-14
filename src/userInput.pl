@@ -43,8 +43,3 @@ askUserMove(X):-
 
 waitForKeyPress:-
 	get_code(_).
-
-invalidMove:-
-    write('Invalid Coordinates!'), nl.
-
-validCoordinates:- write('VALID'),nl.
