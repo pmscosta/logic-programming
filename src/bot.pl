@@ -93,7 +93,7 @@ minimax(Tab, Player, State, Depth, NextVal, NextTab):-
 	Depth > 0, 
 	NewDepth is Depth - 1,
 	valid_moves(Tab, Player, MovesList), 
-	best(Tab, Player, State, MovesList, NewDepth, NextTab, NextVal), !
+	best(Tab, Player, State, MovesList, NewDepth, NextTab, NextVal), NextTab=Tab,!
 	;
 	length(Tab, Length), 
 	evaluateBoard(Tab, Player, NextVal, Length), 
