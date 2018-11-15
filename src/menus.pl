@@ -77,7 +77,8 @@ botMenu(Mode):-
         (
                 X = 1, startBvBGame(X);
                 X = 2, startBvBGame(X); 
-                X = 3, playMenu
+                X = 3, startBvBGame(X);
+                X = 4, playMenu
         ),
         write('Invalid Choice! Press any key to try again'), nl,
         waitForKeyPress, 

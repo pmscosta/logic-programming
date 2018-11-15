@@ -77,28 +77,14 @@ getColumns(Tab, Lenght, Cols):-
 	findall(C, (between(0, Lenght, I), getColumnN(Tab, I, C)), Cols).
 
 
-
-getDiagonal(Board, Diagonal, SecondDiagonal, Offset):-
+getDiagonal(Board, Diag, UpDiag, SecDiag, SecUpDiag, Offset):-
 	length(Board, K), 
 	N is K - 1,
-	findall(B, (between(Offset, N, I), nth0(I, Board, Row), I2 is I - Offset, nth0(I2, Row, B)), Diagonal),
+	findall(A, (between(Offset, N, I), nth0(I, Board, Row), I2 is I - Offset, nth0(I2, Row, A)), Diag),
+	findall(B, (between(Offset, N, I), nth0(I, Board, Row), J is N - I + Offset, nth0(J, Row, B)), SecDiag ),
 	NegativeOffset is 0 - Offset, 
-	findall(B, (between(NegativeOffset, N, I), nth0(I, Board, Row), I2 is I - NegativeOffset, nth0(I2, Row, B)), OtherDir),
-	findall(B, (between(Offset, N, I), Reverse is N - I, nth0(Reverse, Board, Row), I2 is Reverse - Offset, nth0(I2, Row, B)), SecondDiagonal ).
-
-
-appendDiagonals([],[],_).
-
-appendDiagonals([], [H1|T1], [H1|T]):-
-	write('appending 2'), write(H1), nl,
-	appendDiagonals([], T1, T).
-
-appendDiagonals([H1|T1], L2, [H1|T]):-
-	write('appending 1'), write(H1), nl,
-	appendDiagonals(T1,L2,T).
-
-
-	
+	findall(C, (between(NegativeOffset, N, I), nth0(I, Board, Row),  I2 is I - NegativeOffset, nth0(I2, Row, C)), UpDiag),
+	findall(D, (between(Offset, N, I), I1 is I - Offset, nth0(I1, Board, Row), J is N - I, nth0(J, Row, D)), SecUpDiag).
 
 
 sublist( Sublist, List ) :-
@@ -216,9 +202,13 @@ checkRows(Tab, Player, N):-
 checkBiggerDiagonals(Tab, Length, Player):-
 	K is Length - 2,
 	between(0, K, Offset), 
-	getDiagonal(Tab, Diagonal, SecondDiagonal, Offset), 
-	isConnected(Player, Diagonal),
-	isConnected(Player, SecondDiagonal). 
+	getDiagonal(Tab, D, UpD, SecD, SecUpD, Offset),  
+	(
+		isConnected(Player, D);
+		isConnected(Player, UpD);
+		isConnected(Player, SecD);
+		isConnected(Player, SecUpD)
+	).
 
 /*
 			===================================

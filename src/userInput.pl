@@ -31,8 +31,8 @@ askUserInput(Row, Col, N):-
     write(' Insert the piece coordinates: '),
 	getCoordFromInt(Temp),
 	Row is N - Temp,
-	getCoordFromAscii(Col),
-    get_code(_).
+	getCoordFromAscii(Col), 
+	get_code(_).
 
 
 askUserMove(X):-

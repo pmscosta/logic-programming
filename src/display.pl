@@ -121,3 +121,13 @@ display_board(Board):-
 	top_wall(Board),
 	print_tab(Board, N),
 	bot_wall(Board, N).
+
+
+announcePlayer(Player):-
+	Piece is Player + 1,
+	translate(Piece, Code),
+	write('Player: '), 
+	put_code(Code),
+	nl.
+
+cls :- write('\e[H\e[2J').

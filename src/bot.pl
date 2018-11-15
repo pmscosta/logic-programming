@@ -1,4 +1,4 @@
-
+:- use_module(library(lists)).
 /**
 			===================================
 			========= Bot Play Levels =========
@@ -38,7 +38,11 @@ evaluateBoard(Tab, Player, Value, Length):-
 	(
 		checkVictory(Tab, Player, Length),	Value = 100;
 		findall(B, ( checkTwoConnected(Tab, Player, Length), B = 10 ), Score),
-		sumlist(Score, Value)
+		valid_moves(Tab, Player, MovesList),
+		length(MovesList, N),
+		K = [N],
+		append(Score, K, Score2),
+		sumlist(Score2, Value)
 	).
 
 evaluateMove(Tab, Player, Move, Value, Length, OutTab):-
@@ -73,9 +77,13 @@ checkTwoRows(Tab, Player, N):-
 checkTwoBiggerDiagonals(Tab, Player, Length):-
 	K is Length - 2,
 	between(0, K, Offset), 
-	getDiagonal(Tab, Diagonal, SecondDiagonal, Offset), 
-	isTwoConnected(Player, Diagonal),
-	isTwoConnected(Player, SecondDiagonal). 
+	getDiagonal(Tab, D, UpD, SecD, SecUpD, Offset), 
+	(
+	isTwoConnected(Player, D);
+	isTwoConnected(Player, UpD);
+	isTwoConnected(Player, SecD);
+	isTwoConnected(Player, SecUpD)
+	).
     
 /*
 			===================================
@@ -93,7 +101,7 @@ minimax(Tab, Player, State, Depth, NextVal, NextTab):-
 	Depth > 0, 
 	NewDepth is Depth - 1,
 	valid_moves(Tab, Player, MovesList), 
-	best(Tab, Player, State, MovesList, NewDepth, NextTab, NextVal), NextTab=Tab,!
+	best(Tab, Player, State, MovesList, NewDepth, NextTab, NextVal), !
 	;
 	length(Tab, Length), 
 	evaluateBoard(Tab, Player, NextVal, Length), 

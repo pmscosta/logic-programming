@@ -21,8 +21,10 @@ startPvPGame:-
 	playPvPGame(Tab, Player).
 
 playPvPGame(Tab, Player):-
+	cls,
 	length(Tab, N),
 	display_board(Tab),
+	announcePlayer(Player),
 	askUserInput(Row, Col, N),
 	askUserMove(Move),
 	(
@@ -31,8 +33,7 @@ playPvPGame(Tab, Player):-
 		movePiece(Row, Col, Move, Piece, Tab, OutTab),
 		(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
 		NPlayer is Player + 1,
-		NextPlayer is mod(NPlayer, 2), 
-		write('NextPlayer:'), write(NextPlayer), nl, !
+		NextPlayer is mod(NPlayer, 2), !
 		;	
 		write('Invalid Move!'), nl, NextPlayer = Player, OutTab = Tab 
 	),
@@ -52,8 +53,10 @@ startPvBGame(Mode):-
 	playPvBGame(Tab, Player, Mode).
 
 playPvBGame(Tab, Player,Mode):-
+	cls,
 	length(Tab, N),
 	display_board(Tab),
+	announcePlayer(Player),
 	(
 		Player = 1, 
 			(
@@ -92,11 +95,13 @@ startBvBGame(Mode):-
 	playBvBGame(Tab, Player, Mode).
 
 playBvBGame(Tab, Player, Mode):-
+	cls,
 	length(Tab, N),
 	display_board(Tab),
 	(
 		Mode = 1, botPlay(Tab, Player, OutTab);
-		Mode = 2, botPlayGreedy(Tab, Player, OutTab)
+		Mode = 2, botPlayGreedy(Tab, Player, OutTab);
+		Mode = 3, minimax(Tab, Player, 1, 3, _, OutTab)
 
 	),
 	(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
