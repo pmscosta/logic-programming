@@ -53,7 +53,7 @@ checkTwoConnected(Tab, Player, Length):-
 	(
 		checkTwoColumns(Tab, Player, K);
 		checkTwoRows(Tab, Player, K);
-		checkTwoBiggerDiagonals(Tab, Length)
+		checkTwoBiggerDiagonals(Tab, Player, Length)
 	).
 
 isTwoConnected(Player, List):-
@@ -70,11 +70,12 @@ checkTwoRows(Tab, Player, N):-
 	nth0(N1, Tab, Row), 
 	isTwoConnected(Player, Row).
 
-checkTwoBiggerDiagonals(Tab, Length):-
+checkTwoBiggerDiagonals(Tab, Player, Length):-
 	K is Length - 2,
 	between(0, K, Offset), 
-	getDiagonal(Tab, Diagonal, Offset), 
-    isTwoConnected(0, Diagonal). 
+	getDiagonal(Tab, Diagonal, SecondDiagonal, Offset), 
+	isTwoConnected(Player, Diagonal),
+	isTwoConnected(Player, SecondDiagonal). 
     
 /*
 			===================================
@@ -88,6 +89,7 @@ checkTwoBiggerDiagonals(Tab, Length):-
  **/
 
 minimax(Tab, Player, State, Depth, NextVal, NextTab):-
+
 	Depth > 0, 
 	NewDepth is Depth - 1,
 	valid_moves(Tab, Player, MovesList), 
@@ -97,7 +99,7 @@ minimax(Tab, Player, State, Depth, NextVal, NextTab):-
 	evaluateBoard(Tab, Player, NextVal, Length), 
 	NextTab = Tab.
 
-best(Tab, Player, State, [Move], Depth, BestTab, BestVal):-
+best(Tab, Player, State, [Move], Depth, BestTab, BestVal):- 
 
 	Move = [Row, Col, Dir], 
 	Piece is Player + 1, 
@@ -106,9 +108,10 @@ best(Tab, Player, State, [Move], Depth, BestTab, BestVal):-
 
 	nextTurn(Player, State, NextPlayer, NextState),
 
-	minimax(OutTab, NextPlayer, NextState, Depth, BestVal, BestTab).
+	minimax(OutTab, NextPlayer, NextState, Depth, BestVal, BestTab), !.
 
 best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
+
 
 	Move = [Row, Col, Dir], 
 	Piece is Player + 1, 
@@ -121,7 +124,7 @@ best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
 
 	best(Tab, Player, State, NextMoves, Depth, Tab2, Val2), 
 
-	betterOf(Tab1, Val1, Tab2, Val2, BestTab, BestVal, State).
+	betterOf(OutTab, Val1, OutTab, Val2, BestTab, BestVal, State).
 
 
 betterOf(Tab1, Val1, _, Val2, Tab1, Val1, State) :-   

@@ -56,7 +56,8 @@ printBotMenu:-
     write('*   Choose an option  *'), nl, 
     write('*     1-Random Bot    *'), nl,
     write('*     2-Greedy Bot    *'), nl,
-    write('*        3-Back       *'), nl,
+    write('*    3-Mini-Max Bot   *'), nl,
+    write('*        4-Back       *'), nl,
     write('***********************'), nl.
 
 botMenu(Mode):-
@@ -68,6 +69,7 @@ botMenu(Mode):-
         (
                 X = 1, startPvBGame(X);
                 X = 2, startPvBGame(X); 
+                X = 3, startPvBGame(3), 
                 X = 3, playMenu
         )
         ;

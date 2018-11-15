@@ -72,10 +72,34 @@ getColumnN([H|T], N, [R|X]):-
 	getRowN(H, N, R),
 	getColumnN(T, N, X).
 
-getDiagonal(Board, Diagonal, Offset):-
+
+getColumns(Tab, Lenght, Cols):-
+	findall(C, (between(0, Lenght, I), getColumnN(Tab, I, C)), Cols).
+
+
+
+getDiagonal(Board, Diagonal, SecondDiagonal, Offset):-
 	length(Board, K), 
 	N is K - 1,
-	findall(B, (between(Offset, N, I), nth0(I, Board, Row), I2 is I - Offset, nth0(I2, Row, B)), Diagonal).
+	findall(B, (between(Offset, N, I), nth0(I, Board, Row), I2 is I - Offset, nth0(I2, Row, B)), Diagonal),
+	NegativeOffset is 0 - Offset, 
+	findall(B, (between(NegativeOffset, N, I), nth0(I, Board, Row), I2 is I - NegativeOffset, nth0(I2, Row, B)), OtherDir),
+	findall(B, (between(Offset, N, I), Reverse is N - I, nth0(Reverse, Board, Row), I2 is Reverse - Offset, nth0(I2, Row, B)), SecondDiagonal ).
+
+
+appendDiagonals([],[],_).
+
+appendDiagonals([], [H1|T1], [H1|T]):-
+	write('appending 2'), write(H1), nl,
+	appendDiagonals([], T1, T).
+
+appendDiagonals([H1|T1], L2, [H1|T]):-
+	write('appending 1'), write(H1), nl,
+	appendDiagonals(T1,L2,T).
+
+
+	
+
 
 sublist( Sublist, List ) :-
     append( [_, Sublist, _], List ).
@@ -163,11 +187,12 @@ move_and_evaluate(Board, Player, MovesList):-
  **/
 
 checkVictory(Tab, Player, Length):-
+	
 	K is Length - 1,
 	(
 		checkColumns(Tab, Player, K);
 		checkRows(Tab, Player, K);
-		checkBiggerDiagonals(Tab, Length)
+		checkBiggerDiagonals(Tab, Length, Player)
 	).
 
 wonGame(Player):-
@@ -188,11 +213,12 @@ checkRows(Tab, Player, N):-
 	nth0(N1, Tab, Row), 
 	isConnected(Player, Row).
 
-checkBiggerDiagonals(Tab, Length):-
+checkBiggerDiagonals(Tab, Length, Player):-
 	K is Length - 2,
 	between(0, K, Offset), 
-	getDiagonal(Tab, Diagonal, Offset), 
-	isConnected(0, Diagonal). 
+	getDiagonal(Tab, Diagonal, SecondDiagonal, Offset), 
+	isConnected(Player, Diagonal),
+	isConnected(Player, SecondDiagonal). 
 
 /*
 			===================================

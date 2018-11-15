@@ -23,10 +23,6 @@ startPvPGame:-
 playPvPGame(Tab, Player):-
 	length(Tab, N),
 	display_board(Tab),
-	minimax(Tab, Player, 1, 3, Val, NextTab),
-	nl, nl, write('MINIMAX:'), nl, 
-	display_board(NextTab), nl, nl, nl,
-
 	askUserInput(Row, Col, N),
 	askUserMove(Move),
 	(
@@ -73,7 +69,8 @@ playPvBGame(Tab, Player,Mode):-
 			)
 		;
 		Mode = 1, botPlay(Tab, Player, OutTab);
-		Mode = 2, botPlayGreedy(Tab, Player, OutTab)
+		Mode = 2, botPlayGreedy(Tab, Player, OutTab);
+		Mode = 3, minimax(Tab, Player, 1, 3, _, OutTab)
 	),
 	(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
 	NPlayer is Player + 1,
