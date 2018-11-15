@@ -23,6 +23,10 @@ startPvPGame:-
 playPvPGame(Tab, Player):-
 	length(Tab, N),
 	display_board(Tab),
+	minimax(Tab, Player, 1, 3, Val, NextTab),
+	nl, nl, write('MINIMAX:'), nl, 
+	display_board(NextTab), nl, nl, nl,
+
 	askUserInput(Row, Col, N),
 	askUserMove(Move),
 	(

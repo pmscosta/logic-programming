@@ -41,7 +41,7 @@ evaluateBoard(Tab, Player, Value, Length):-
 		sumlist(Score, Value)
 	).
 
-evaluateMove(Tab, Player, Move, Value, Length):-
+evaluateMove(Tab, Player, Move, Value, Length, OutTab):-
 	Move = [Row, Col, Move],
 	Piece is Player + 1,
 	movePiece(Row, Col, Move, Piece, Tab, OutTab),
@@ -87,22 +87,59 @@ checkTwoBiggerDiagonals(Tab, Length):-
 			===================================
  **/
 
-minimax(Tab, Player, Pos, BestNextPos, Val) :-
-	length(Tab, Length),
-	valid_moves(Tab, Player, MovesList),
-	best(Tab, Player, MovesList, BestNextPos, Val), !
+minimax(Tab, Player, State, Depth, NextVal, NextTab):-
+	Depth > 0, 
+	NewDepth is Depth - 1,
+	valid_moves(Tab, Player, MovesList), 
+	best(Tab, Player, State, MovesList, NewDepth, NextTab, NextVal), !
 	;
-	evaluateMove(Tab, Player, Move, Value, Length).
+	length(Tab, Length), 
+	evaluateBoard(Tab, Player, NextVal, Length), 
+	NextTab = Tab.
 
-best(Tab, Player, [Pos], Pos, Val) :-
-		minimax(Tab, Player, Pos, _, Val), !.
+best(Tab, Player, State, [Move], Depth, BestTab, BestVal):-
 
-best(Tab, Player, [Pos1 | PosList], BestPos, BestVal) :-
-		minimax(Tab, Player, Pos1, _, Val1), 
-		best(Tab, Player, PostList, Pos2, Val2),
-		betterOf(Pos1, Val1, Pos2, Val2, BestPos, BestVal).
+	Move = [Row, Col, Dir], 
+	Piece is Player + 1, 
 
-%betterOf(Pos0, Val0, _, Val1, Pos0, Val0):-
+	movePiece(Row, Col, Dir, Piece, Tab, OutTab),
+
+	nextTurn(Player, State, NextPlayer, NextState),
+
+	minimax(OutTab, NextPlayer, NextState, Depth, BestVal, BestTab).
+
+best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
+
+	Move = [Row, Col, Dir], 
+	Piece is Player + 1, 
+
+	movePiece(Row, Col, Dir, Piece, Tab, OutTab),
+
+	nextTurn(Player, State, NextPlayer, NextState),
+
+	minimax(OutTab, NextPlayer, NextState, Depth, Val1, Tab1), 
+
+	best(Tab, Player, State, NextMoves, Depth, Tab2, Val2), 
+
+	betterOf(Tab1, Val1, Tab2, Val2, BestTab, BestVal, State).
+
+
+betterOf(Tab1, Val1, _, Val2, Tab1, Val1, State) :-   
+    State = 1,                         
+    Val1 > Val2, !                             
+    ;
+    State = 0,                         
+    Val1 < Val2, !.                            
+
+betterOf(_, _, Tab2, Val2, Tab2, Val2, _).      
+
+
+nextTurn(Player, State, NextPlayer, NextState):-
+	NPlayer is Player + 1,
+	NextPlayer is mod(NPlayer, 2), 
+	NState is State + 1, 
+	NextState is mod(NState, 2).
+  
 
 
 		
