@@ -41,8 +41,8 @@ playMenu:-
     (
 
         X = 1, startPvPGame; 
-        X = 2, startPvBGame; 
-        X = 3, botMenu;
+        X = 2, botMenu(2); 
+        X = 3, botMenu(3);
         X = 4, mainMenu;
         write('Invalid Choice! Press any key to try again'), nl,
         waitForKeyPress, 
@@ -59,15 +59,24 @@ printBotMenu:-
     write('*        3-Back       *'), nl,
     write('***********************'), nl.
 
-botMenu:-
+botMenu(Mode):-
     printBotMenu, 
     read(X), waitForKeyPress, 
     nl, 
     (
-
-        X = 1, startBvBGame(X);
-        X = 2, startBvBGame(X); 
-        X = 3, playMenu;
+        Mode = 2, 
+        (
+                X = 1, startPvBGame(X);
+                X = 2, startPvBGame(X); 
+                X = 3, playMenu
+        )
+        ;
+        Mode = 3,
+        (
+                X = 1, startBvBGame(X);
+                X = 2, startBvBGame(X); 
+                X = 3, playMenu
+        ),
         write('Invalid Choice! Press any key to try again'), nl,
         waitForKeyPress, 
         mainMenu

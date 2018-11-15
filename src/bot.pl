@@ -41,6 +41,12 @@ evaluateBoard(Tab, Player, Value, Length):-
 		sumlist(Score, Value)
 	).
 
+evaluateMove(Tab, Player, Move, Value, Length):-
+	Move = [Row, Col, Move],
+	Piece is Player + 1,
+	movePiece(Row, Col, Move, Piece, Tab, OutTab),
+	evaluateBoard(OutTab, Player, Value, Length).
+
 
 checkTwoConnected(Tab, Player, Length):-
 	K is Length - 1,
@@ -74,3 +80,29 @@ checkTwoBiggerDiagonals(Tab, Length):-
 			===================================
 */
 
+
+/**
+			===================================
+			======== Minimax ALgorithm ========
+			===================================
+ **/
+
+minimax(Tab, Player, Pos, BestNextPos, Val) :-
+	length(Tab, Length),
+	valid_moves(Tab, Player, MovesList),
+	best(Tab, Player, MovesList, BestNextPos, Val), !
+	;
+	evaluateMove(Tab, Player, Move, Value, Length).
+
+best(Tab, Player, [Pos], Pos, Val) :-
+		minimax(Tab, Player, Pos, _, Val), !.
+
+best(Tab, Player, [Pos1 | PosList], BestPos, BestVal) :-
+		minimax(Tab, Player, Pos1, _, Val1), 
+		best(Tab, Player, PostList, Pos2, Val2),
+		betterOf(Pos1, Val1, Pos2, Val2, BestPos, BestVal).
+
+%betterOf(Pos0, Val0, _, Val1, Pos0, Val0):-
+
+
+		

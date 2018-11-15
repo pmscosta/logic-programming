@@ -46,12 +46,12 @@ playPvPGame(Tab, Player):-
 			===================================
  **/
 
-startPvBGame:-
+startPvBGame(Mode):-
 	tab(Tab),
 	Player is 1, 
-	playPvBGame(Tab, Player).
+	playPvBGame(Tab, Player, Mode).
 
-playPvBGame(Tab, Player):-
+playPvBGame(Tab, Player,Mode):-
 	length(Tab, N),
 	display_board(Tab),
 	(
@@ -65,15 +65,16 @@ playPvBGame(Tab, Player):-
 				;
 				write('Invalid Move!'), nl, 
 				NextPlayer = Player, OutTab = Tab, !, 
-				playPvBGame(OutTab, Player)
+				playPvBGame(OutTab, Player, Mode)
 			)
 		;
-		botPlay(Tab, Player, OutTab)
+		Mode = 1, botPlay(Tab, Player, OutTab);
+		Mode = 2, botPlayGreedy(Tab, Player, OutTab)
 	),
 	(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
 	NPlayer is Player + 1,
 	NextPlayer is mod(NPlayer, 2), 
-	playPvBGame(OutTab, NextPlayer).
+	playPvBGame(OutTab, NextPlayer, Mode).
 
 
 
