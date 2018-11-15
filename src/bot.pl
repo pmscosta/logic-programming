@@ -39,8 +39,11 @@ evaluateBoard(Tab, Player, Value, Length):-
 		checkVictory(Tab, Player, Length),	Value = 100;
 		findall(B, ( checkTwoConnected(Tab, Player, Length), B = 10 ), Score),
 		valid_moves(Tab, Player, MovesList),
+		nextPlayer(Player, NextPlayer), 
+		valid_moves(Tab, NextPlayer, EnemyMoves),
 		length(MovesList, N),
-		K = [N],
+		length(EnemyMoves, E),
+		K = [N, -E],
 		append(Score, K, Score2),
 		sumlist(Score2, Value)
 	).

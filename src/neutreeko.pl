@@ -32,8 +32,7 @@ playPvPGame(Tab, Player):-
 		valid_move(Tab,Player,Row,Col,Move,Piece),
 		movePiece(Row, Col, Move, Piece, Tab, OutTab),
 		(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
-		NPlayer is Player + 1,
-		NextPlayer is mod(NPlayer, 2), !
+		nextPlayer(Player, NextPlayer), !
 		;	
 		write('Invalid Move!'), nl, NextPlayer = Player, OutTab = Tab 
 	),
@@ -76,8 +75,7 @@ playPvBGame(Tab, Player,Mode):-
 		Mode = 3, minimax(Tab, Player, 1, 3, _, OutTab)
 	),
 	(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
-	NPlayer is Player + 1,
-	NextPlayer is mod(NPlayer, 2), 
+	nextPlayer(Player, NextPlayer), 
 	playPvBGame(OutTab, NextPlayer, Mode).
 
 
@@ -105,10 +103,13 @@ playBvBGame(Tab, Player, Mode):-
 
 	),
 	(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
-	NPlayer is Player + 1,
-	NextPlayer is mod(NPlayer, 2), 
+	nextPlayer(Player, NextPlayer), 
 	playBvBGame(OutTab, NextPlayer, Mode).
 
+
+nextPlayer(Player, NextPlayer):-
+	NPlayer is Player + 1,
+	NextPlayer is mod(NPlayer, 2).
 
 main:- 
 	mainMenu.
