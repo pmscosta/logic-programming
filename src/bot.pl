@@ -197,7 +197,7 @@ best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
 
 	best(Tab, Player, State, NextMoves, Depth, Tab2, Val2), 
 
-	betterOf(OutTab, Val1, OutTab, Val2, BestTab, BestVal, State).
+	betterOf(OutTab, Val1, Tab2, Val2, BestTab, BestVal, State).
 
 
 betterOf(Tab1, Val1, _, Val2, Tab1, Val1, State) :-   
