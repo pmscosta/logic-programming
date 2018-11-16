@@ -1,4 +1,5 @@
-
+:- use_module(library(lists)).
+:- dynamic map/2.
 /**
 			===================================
 			======= Movement Translate ========
@@ -29,9 +30,6 @@ rowTranslate(9, -1).
 /*
 			===================================
 */
-
-
-
 
 
 
@@ -164,6 +162,40 @@ move_and_evaluate(Board, Player, MovesList):-
 			===================================
 */
 
+/**
+			===================================
+			========== Draw Conditions ========
+			===================================
+ **/
+
+
+checkDraw(Tab):-
+
+	flatten2(Tab, List),
+
+	(
+		retract( map(List,N) ),
+		NewN is N + 1,
+		assertz( map(List, NewN) );
+		NewN is 1, 
+		assertz(map(List, NewN))
+	), 
+	NewN > 2.
+	
+
+flatten2([], []):- !.
+flatten2([L|Ls], Flat):-
+	!,
+	flatten2(L, NewL),
+	flatten2(Ls, NewLs),
+	append(NewL, NewLs, Flat).
+flatten2(L, [L]).
+
+
+drawGame:-
+	write('The same position occurred 3 times!'), nl, 
+	write('This match is a draw!'), nl, 
+	mainMenu.
 
 
 /**

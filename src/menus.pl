@@ -46,7 +46,7 @@ playMenu:-
         X = 4, mainMenu;
         write('Invalid Choice! Press any key to try again'), nl,
         waitForKeyPress, 
-        mainMenu
+        playMenu
     ).
 
 printBotMenu:-
@@ -67,10 +67,13 @@ botMenu(Mode):-
     (
         Mode = 2, 
         (
-                X = 1, startPvBGame(X);
-                X = 2, startPvBGame(X); 
-                X = 3, startPvBGame(3), 
-                X = 3, playMenu
+            pickFirstPlayer(First),
+            (
+                X = 1, startPvBGame(X, First);
+                X = 2, startPvBGame(X, First); 
+                X = 3, startPvBGame(X, First);
+                X = 4, playMenu
+            )
         )
         ;
         Mode = 3,
@@ -82,8 +85,46 @@ botMenu(Mode):-
         ),
         write('Invalid Choice! Press any key to try again'), nl,
         waitForKeyPress, 
-        mainMenu
+        botMenu(Mode)
     ).
+
+
+pickFirstPlayer(X):-
+    printFirstPlayerMenu,
+    read(Temp), waitForKeyPress, 
+    X is Temp - 1, 
+    nl,
+    (
+        X = 3, playMenu;
+        \+ between(1, 3, Temp), 
+        write('Invalid Choice! Press any key to try1 again'), nl,
+        waitForKeyPress, 
+        pickFirstPlayer(Nx);
+        true     
+    ).
+
+/*    (
+        between(1, 2, Temp), X = Temp
+        ;
+        Temp = 3, playMenu
+        ;
+        write('Invalid Choice! Press any key to try1 again'), nl,
+        waitForKeyPress, 
+        pickFirstPlayer(Nx)
+    ).
+*/
+
+
+printFirstPlayerMenu:-
+        write('***********************'), nl,
+        write('*     -Neutreeko-     *'), nl , 
+        write('***********************'), nl,
+        write('*   Choose an option  *'), nl, 
+        write('*      1-Bot First    *'), nl,
+        write('*     2-Human First   *'), nl,
+        write('*       3-Back        *'), nl,
+        write('***********************'), nl.
+
 
 
 
