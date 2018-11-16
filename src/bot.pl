@@ -8,6 +8,7 @@
 /**
  * botPlay(+Tab, +Player, -OutTab).
  * Plays the random bot 
+ * Calculates all the possible moves and selects a random one.
  * @param Tab - Current Board
  * @param Player - Current Player
  * @param OutTab - Board after bot play
@@ -24,6 +25,9 @@ botPlay(Tab, Player, OutTab):-
 /**
  * botPlayGreedy(+Tab, +Player, -OutTab).
  * Plays the greedy bot 
+ * Following the heuristic present in evaluateBoard(+Tab, +Player, -Value, +Length)
+ * it calculates all the possible moves, evaluating them.
+ * Then it selects the best future move, based on such evaluation, and makes it.
  * @param Tab - Current Board
  * @param Player - Current Player
  * @param OutTab - Board after bot play
@@ -51,25 +55,28 @@ botPlayGreedy(Tab, Player, OutTab):-
 
 /*
  * evaluateBoard(+Tab, +Player, -Value, +Length).
- * Evaluates the board following an heuristic 
+ * Evaluates the board following an heuristic.
+ * The heuristcs takes in consideration the following main points:
+ * 			-if it can win with such moves, gives it the highest value possible, 1000.
+ *          -gives 15 points for each two pieces connected (be it in a row, column or diagonal)
+ *          -calculates how many other valid moves there are after that board and adds it to score
+ * 					(if there are 10 valid moves after, value += 10)
+ * 			-does the same as the previous point, but for enemy moves, subtracting that valeu
  * @param Tab - Board to evaluate
  * @param Player - Current Player
  * @param Value - Board value following the heuristic
  * @param Length - Length of the board
 */
 evaluateBoard(Tab, Player, Value, Length):-
-	(
 		checkVictory(Tab, Player, Length),	Value = 1000;
-		findall(B, ( checkTwoConnected(Tab, Player, Length), B = 15 ), Score),
+		checkTwoConnected(Tab, Player, Length, Total),
+		Total15 is Total * 15, 
 		valid_moves(Tab, Player, MovesList),
 		nextPlayer(Player, NextPlayer), 
 		valid_moves(Tab, NextPlayer, EnemyMoves),
 		length(MovesList, N),
 		length(EnemyMoves, E),
-		K = [N,-E],
-		append(Score, K, Score2),
-		sumlist(Score2, Value)
-	).
+		Value is Total15 + N - E.
 
 /**
  * evaluateMove(+Tab, +Player, +Move, -Value, +Length, -OutTab).
@@ -90,19 +97,20 @@ evaluateMove(Tab, Player, Move, Value, Length, OutTab):-
 
 /**
  * checkTwoConnected(+Tab, +Player, +Length).
- * Checks if two there is two pieces connected, horizontally,
+ * Checks if there are two pieces connected, horizontally,
  * vertically or diagonally
  * @param Tab - Current Tab
  * @param Player - Current Player
  * @param Length - Length of the board
  **/
-checkTwoConnected(Tab, Player, Length):-
+checkTwoConnected(Tab, Player, Length, TotalConnected):-
 	K is Length - 1,
-	(
-		checkTwoColumns(Tab, Player, K);
-		checkTwoRows(Tab, Player, K);
-		checkTwoBiggerDiagonals(Tab, Player, Length)
-	).
+	!,
+	checkTwoColumns(Tab, Player, K, Value1),
+	checkTwoRows(Tab, Player, K, Value2),
+	checkTwoBiggerDiagonals(Tab, Player, K, Value3),
+	TotalConnected is Value1 + Value2 + Value3.	
+
 
 /**
  * isTwoConnected(+Player, +List).
@@ -121,10 +129,9 @@ isTwoConnected(Player, List):-
  * @param Player - Current Player
  * @param Length - Board Length 
  **/
-checkTwoColumns(Tab, Player, Length):-
-	between(0, Length, N1), 
-	getColumnN(Tab, N1, Col), 
-	isTwoConnected(Player, Col).
+checkTwoColumns(Tab, Player, Length, Value):-
+	findall( B,(between(0, Length, N1), getColumnN(Tab, N1, Col), isTwoConnected(Player, Col), B=1), List), 
+	sumlist(List, Value).
 
 /**
  *checkTwoRows(+Tab, +Player, +Length).
@@ -133,22 +140,21 @@ checkTwoColumns(Tab, Player, Length):-
  * @param Player - Current Player
  * @param Length - Board Length 
  **/
-checkTwoRows(Tab, Player, Length):-
-	between(0, Length, N1), 
-	nth0(N1, Tab, Row), 
-	isTwoConnected(Player, Row).
+checkTwoRows(Tab, Player, Length, Value):-
+	findall(B, (between(0, Length, N1), nth0(N1, Tab, Row), isTwoConnected(Player, Row), B=1), List), 
+	sumlist(List, Value).
 
 
-checkTwoBiggerDiagonals(Tab, Player, Length):-
+checkTwoBiggerDiagonals(Tab, Player, Length, Value):-
 	K is Length - 2,
-	between(0, K, Offset), 
-	getDiagonal(Tab, D, UpD, SecD, SecUpD, Offset), 
-	(
-	isTwoConnected(Player, D);
-	isTwoConnected(Player, UpD);
-	isTwoConnected(Player, SecD);
-	isTwoConnected(Player, SecUpD)
-	).
+	findall(B , (between(0, K, Offset), getDiagonal(Tab, D, UpD, SecD, SecUpD, Offset), 
+											(
+											isTwoConnected(Player, D);
+											isTwoConnected(Player, UpD);
+											isTwoConnected(Player, SecD);
+											isTwoConnected(Player, SecUpD)
+											), B=1 ), List),
+	sumlist(List, Value).
     
 /*
 			===================================

@@ -61,7 +61,7 @@ startPvBGame(Mode, FirstPlayer):-
 	playPvBGame(Tab, Player, Mode, FirstPlayer).
 
 playPvBGame(Tab, Player,Mode, FirstPlayer):-
-	cls,
+	
 	length(Tab, N),
 	display_board(Tab),
 	announcePlayer(Player),
@@ -78,7 +78,7 @@ playPvBGame(Tab, Player,Mode, FirstPlayer):-
 		;
 		Mode = 2, botPlayGreedy(Tab, Player, OutTab)
 		;
-		Mode = 3, minimax(Tab, Player, 1, 3, _, OutTab)	
+		Mode = 3, minimax(Tab, Player, 1, 2, _, OutTab)	
 	),
 	(
 		checkVictory(OutTab, Player, N), 
@@ -117,7 +117,7 @@ playBvBGame(Tab, Player, Mode):-
 		;
 		Mode = 2, botPlayGreedy(Tab, Player, OutTab)
 		;
-		Mode = 3, minimax(Tab, Player, 1, 3, _, OutTab)
+		Mode = 3, minimax(Tab, Player, 1, 2, _, OutTab)
 	),
 	(
 			checkVictory(OutTab, Player, N), 
