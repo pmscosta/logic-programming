@@ -11,14 +11,14 @@ botPlay(Tab, Player, OutTab):-
 	nth0(Index, MovesList, Move), 
 	Move = [Row, Col, Dir], 
 	Piece is Player + 1, 
-	movePiece(Row, Col, Dir, Piece, Tab, OutTab).
+	move([Row, Col, Dir], Piece, Tab, OutTab).
 
 botPlayGreedy(Tab, Player, OutTab):-
 	move_and_evaluate(Tab, Player, MovesList),
 	nth0(0, MovesList, Move), 
 	Move = [_, Row, Col, Dir], 
 	Piece is Player + 1, 
-	movePiece(Row, Col, Dir, Piece, Tab, OutTab).
+	move([Row, Col, Dir], Piece, Tab, OutTab).
 
 /*
 			===================================
@@ -36,14 +36,14 @@ botPlayGreedy(Tab, Player, OutTab):-
 
 evaluateBoard(Tab, Player, Value, Length):-
 	(
-		checkVictory(Tab, Player, Length),	Value = 100;
-		findall(B, ( checkTwoConnected(Tab, Player, Length), B = 10 ), Score),
+		checkVictory(Tab, Player, Length),	Value = 1000;
+		findall(B, ( checkTwoConnected(Tab, Player, Length), B = 15 ), Score),
 		valid_moves(Tab, Player, MovesList),
 		nextPlayer(Player, NextPlayer), 
 		valid_moves(Tab, NextPlayer, EnemyMoves),
 		length(MovesList, N),
 		length(EnemyMoves, E),
-		K = [N, -E],
+		K = [N,-E],
 		append(Score, K, Score2),
 		sumlist(Score2, Value)
 	).
@@ -51,7 +51,7 @@ evaluateBoard(Tab, Player, Value, Length):-
 evaluateMove(Tab, Player, Move, Value, Length, OutTab):-
 	Move = [Row, Col, Move],
 	Piece is Player + 1,
-	movePiece(Row, Col, Move, Piece, Tab, OutTab),
+	move([Row, Col, Move], Piece, Tab, OutTab),
 	evaluateBoard(OutTab, Player, Value, Length).
 
 
@@ -115,7 +115,7 @@ best(Tab, Player, State, [Move], Depth, BestTab, BestVal):-
 	Move = [Row, Col, Dir], 
 	Piece is Player + 1, 
 
-	movePiece(Row, Col, Dir, Piece, Tab, OutTab),
+	move([Row, Col, Dir], Piece, Tab, OutTab),
 
 	nextTurn(Player, State, NextPlayer, NextState),
 
@@ -126,11 +126,11 @@ best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
 	Move = [Row, Col, Dir], 
 	Piece is Player + 1, 
 
-	movePiece(Row, Col, Dir, Piece, Tab, OutTab),
+	move([Row, Col, Dir], Piece, Tab, OutTab),
 
 	nextTurn(Player, State, NextPlayer, NextState),
 
-	minimax(OutTab, NextPlayer, NextState, Depth, Val1, Tab1), 
+	minimax(OutTab, NextPlayer, NextState, Depth, Val1, _), 
 
 	best(Tab, Player, State, NextMoves, Depth, Tab2, Val2), 
 

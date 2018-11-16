@@ -22,6 +22,7 @@ startPvPGame:-
 	playPvPGame(Tab, Player).
 
 playPvPGame(Tab, Player):-
+	cls,
 	length(Tab, N),
 	display_board(Tab),
 	announcePlayer(Player),
@@ -30,7 +31,7 @@ playPvPGame(Tab, Player):-
 		askUserMove(Move),
 		getPiece(Row, Col, Tab, Piece),
 		valid_move(Tab,Player,Row,Col,Move,Piece),
-	movePiece(Row, Col, Move, Piece, Tab, OutTab),
+	move([Row, Col, Move], Piece, Tab, OutTab),
 	(
 			checkVictory(OutTab, Player, N), 
 			display_board(OutTab), 
@@ -71,7 +72,7 @@ playPvBGame(Tab, Player,Mode, FirstPlayer):-
 			askUserMove(Move),
 			getPiece(Row, Col, Tab, Piece),
 			valid_move(Tab,Player,Row,Col,Move,Piece),
-		movePiece(Row, Col, Move, Piece, Tab, OutTab)
+		move([Row, Col, Move], Piece, Tab, OutTab)
 		;
 		Mode = 1, botPlay(Tab, Player, OutTab)
 		;

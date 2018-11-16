@@ -113,9 +113,10 @@ checkBoundaries(Position, Lenght):-
 	).
 
 
-movePiece(Row, Col, Move, Piece, Board, OutBoard):-
-	colTranslate(Move, MoveCol),
-	rowTranslate(Move, MoveRow),
+move(Move, Piece, Board, OutBoard):-
+	Move = [Row, Col, Dir],
+	colTranslate(Dir, MoveCol),
+	rowTranslate(Dir, MoveRow),
 	replaceElemMatrix(Row, Col, 0, Board, NBoard),
 	length(Board, N),
 	movePiece(Row, Col, MoveCol, MoveRow, Piece, NBoard, OutBoard, N).
@@ -154,7 +155,7 @@ move_and_evaluate(Board, Player, MovesList):-
 	NPiece is Player + 1, 
 	findall([Value, Row, Col, Move],( getPiece(Row, Col, Board, NPiece), 
 								valid_move(Board, Player, Row, Col, Move, NPiece), 
-								movePiece(Row, Col, Move, NPiece, Board, OutTab),
+								move([Row, Col, Move], NPiece, Board, OutTab),
 								evaluateBoard(OutTab, Player, Value, K)), Moves),
 	sort(Moves, TempMoves),
 	reverse(TempMoves, MovesList).
