@@ -124,37 +124,46 @@ isTwoConnected(Player, List):-
 
 /**
  *checkTwoColumns(+Tab, +Player, +Length).
- * Checks if there is two pieces connected together in two columns
+ * Checks if there are two pieces connected together in a column
  * @param Tab - Current Board
  * @param Player - Current Player
  * @param Length - Board Length 
  **/
 checkTwoColumns(Tab, Player, Length, Value):-
-	findall( B,(between(0, Length, N1), getColumnN(Tab, N1, Col), isTwoConnected(Player, Col), B=1), List), 
-	sumlist(List, Value).
+	between(0, Length, N1), 
+	getColumnN(Tab, N1, Col), 
+	isTwoConnected(Player, Col),
+	Value = 1
+	;
+	Value = 0.
+	
 
 /**
  *checkTwoRows(+Tab, +Player, +Length).
- * Checks if there is two pieces connected together in two rows
+ * Checks if there are two pieces connected together in a row
  * @param Tab - Current Board
  * @param Player - Current Player
  * @param Length - Board Length 
  **/
 checkTwoRows(Tab, Player, Length, Value):-
-	findall(B, (between(0, Length, N1), nth0(N1, Tab, Row), isTwoConnected(Player, Row), B=1), List), 
-	sumlist(List, Value).
+	between(0, Length, N1), 
+	nth0(N1, Tab, Row), 
+	isTwoConnected(Player, Row),
+	Value = 1;
+	Value = 0.
 
 
 checkTwoBiggerDiagonals(Tab, Player, Length, Value):-
 	K is Length - 2,
-	findall(B , (between(0, K, Offset), getDiagonal(Tab, D, UpD, SecD, SecUpD, Offset), 
-											(
-											isTwoConnected(Player, D);
-											isTwoConnected(Player, UpD);
-											isTwoConnected(Player, SecD);
-											isTwoConnected(Player, SecUpD)
-											), B=1 ), List),
-	sumlist(List, Value).
+	between(0, K, Offset), 
+	getDiagonal(Tab, D, UpD, SecD, SecUpD, Offset), 
+	(
+	isTwoConnected(Player, D), Value = 1;
+	isTwoConnected(Player, UpD), Value = 1;
+	isTwoConnected(Player, SecD), Value = 1;
+	isTwoConnected(Player, SecUpD), Value = 1;
+	Value = 0
+	).
     
 /*
 			===================================

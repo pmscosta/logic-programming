@@ -28,16 +28,16 @@ Translates visual coordinates into the internal ones used in the list.
 @param N - the board length
 **/
 askUserInput(Row, Col, N):-
-    write(' Insert the piece coordinates: '),
+    write(' Insert the piece coordinates(e.g. \'4b.\'): '),
 	getCoordFromInt(Temp),
 	Row is N - Temp,
 	getCoordFromAscii(Col), 
-	get_code(_).
+	skip_line.
 
 
 askUserMove(X):-
 	write(' Insert the move direction: '), 
-	read(X),
+	catch(read(X), _, fail),
 	get_code(_).
 
 
