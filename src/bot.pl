@@ -249,7 +249,7 @@ best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
 
 
 /**
- * betterOf(+Tab1, +Val1, _, +Val2, -Tab1, -Val1, +State). 
+ * betterOf(+Tab1, +Val1, +_, +Val2, -Tab1, -Val1, +State). 
  * Checks if Tab1 is better valued than Tab2,if so returns Tab1 and respective value as best action
  * @param Tab1 - Board option 1
  * @param Val1 - Value from option 1
@@ -267,7 +267,7 @@ betterOf(Tab1, Val1, _, Val2, Tab1, Val1, State) :-
 
 
 /**
- * betterOf(_, _, Tab2, +Val2, -Tab1, -Val1, +State). 
+ * betterOf(+_, +_, Tab2, +Val2, -Tab1, -Val1, +State). 
  * If the other call of betterOf fails, it's Tab2 the best play, so this assigns Tab2 as the best action to take
  * @param Tab2 - Board option 2
  * @param Val2 - Value from option 2

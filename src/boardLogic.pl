@@ -9,6 +9,7 @@
 	e.g., 1 means down and left. so we have to go back in the columns 
 	and forward in the rows, that menans 1 becomes -> (col: -1, row: 1).
 **/
+
 colTranslate(1, -1).
 colTranslate(2, 0).
 colTranslate(3, 1).
@@ -85,9 +86,22 @@ getDiagonal(Board, Diag, UpDiag, SecDiag, SecUpDiag, Offset):-
 	findall(D, (between(Offset, N, I), I1 is I - Offset, nth0(I1, Board, Row), J is N - I, nth0(J, Row, D)), SecUpDiag).
 
 
+/**
+ * sublist( +Sublist, +List ). 
+ * Implementation of sublist predicate using append
+ * @param Sublist - Sublist to see if it's inside List
+ * @param List - List to check if Sublist is inside
+ */ 
 sublist( Sublist, List ) :-
     append( [_, Sublist, _], List ).
 
+/**
+ * checkEmpty(+Board,+NextRow,+NextCol).
+ * Check if board element specified is empty
+ * @param Board - Current Board
+ * @param NextRow - Row of element to check
+ * @param NextCol - Col of element to check
+ */
 checkEmpty(Board,NextRow,NextCol):-
 	getPiece(NextRow, NextCol, Board, NextPiece), 
 	NextPiece=:=0.
@@ -104,6 +118,13 @@ checkEmpty(Board,NextRow,NextCol):-
 			== Movement Operations Utilities ==
 			===================================
  **/
+
+/**
+ * checkBoundaries(+Position, +Lenght).
+ * Check if position is inside Board Boundaries 
+ * @param Position - Position to check (Dimension)
+ * @param Lenght - Board Length
+ */
 checkBoundaries(Position, Lenght):-
 	LengthArray is Lenght - 1, 
 	(
@@ -112,7 +133,14 @@ checkBoundaries(Position, Lenght):-
 		true
 	).
 
-
+/**
+ * move(+Move, +Piece, +Board, -OutBoard).
+ * Moves the piece with the move, returning the resulting board (OutBoard)
+ * @param Move - Move to take
+ * @param Piece - Piece to move
+ * @param Board - Current Board
+ * @param OutBoard - Resulting board
+ */
 move(Move, Piece, Board, OutBoard):-
 	Move = [Row, Col, Dir],
 	colTranslate(Dir, MoveCol),
@@ -121,6 +149,18 @@ move(Move, Piece, Board, OutBoard):-
 	length(Board, N),
 	movePiece(Row, Col, MoveCol, MoveRow, Piece, NBoard, OutBoard, N).
 
+/**
+ * movePiece(+Row, +Col, +MoveCol, +MoveRow, +Piece, +Board, -OutBoard, +BoardLength).
+ * Checks if move is possible, updates board and moves the piece returning the resulting board
+ * @param Row - Current row of the piece to move
+ * @param Col - Current col of the piece to move
+ * @param MoveCol - Distance to Next Col
+ * @param MoveRow - Distance to Next Row
+ * @param Piece - Current Piece
+ * @param Board - Current Board
+ * @param OutBoard - Resulting Board
+ * @param BoardLength - Board Length
+ */
 movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 	NextRow is Row + MoveRow, 
 	NextCol is Col + MoveCol, 
@@ -130,6 +170,16 @@ movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 	NextPiece = 0 -> movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength);
 					 replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
 
+/**
+ * valid_move(+Board,+Player,+Row,+Col,+Move, +Piece).
+ * Checks if move valid to take, checking input, and move following the game logic
+ * @param Board - Current Board
+ * @param Player - Current Player
+ * @param Row - Current Row of the Piece
+ * @param Col - Current Col of the Piece
+ * @param Move - Move to test
+ * @param Piece - Piece to move
+ */
 valid_move(Board,Player,Row,Col,Move, Piece):-
 	integer(Move),
 	between(1, 9, Move),
@@ -144,12 +194,26 @@ valid_move(Board,Player,Row,Col,Move, Piece):-
 	checkBoundaries(NextCol, BoardLength),
 	checkEmpty(Board,NextRow,NextCol). 
 
+/**
+ * valid_moves(+Board,+Player,-MovesList).
+ * Finds all valid moves regarding the player to play
+ * @param Board - Current Board
+ * @param Player - Current Player
+ * @param MovesList - List of valid moves to take
+ */
 valid_moves(Board, Player, MovesList):-
 	NPiece is Player + 1, 
 	findall([Row, Col, Move], ( getPiece(Row, Col, Board, NPiece), 
 								valid_move(Board, Player, Row, Col, Move, NPiece)), 
 								MovesList).
 
+/**
+ * move_and_evaluate(+Board,+Player,-MovesList).
+ * Finds all valid moves including the value from the move regarding the player to play including, returs the list ordered by higher value 
+ * @param Board - Current Board
+ * @param Player - Current Player
+ * @param MovesList - List of valid moves to take
+ */
 move_and_evaluate(Board, Player, MovesList):-
 	length(Board, N),
 	K is N - 1, 
@@ -170,7 +234,11 @@ move_and_evaluate(Board, Player, MovesList):-
 			===================================
  **/
 
-
+/**
+ * checkDraw(+Tab).
+ * Checks if a draw occurs
+ * @param Tab - Current Board
+ */
 checkDraw(Tab):-
 
 	flatten2(Tab, List),
@@ -193,7 +261,10 @@ flatten2([L|Ls], Flat):-
 	append(NewL, NewLs, Flat).
 flatten2(L, [L]).
 
-
+/**
+ * drawGame.
+ * Prints draw message and returns to main menu
+ */
 drawGame:-
 	write('The same position occurred 3 times!'), nl, 
 	write('This match is a draw!'), nl, 
@@ -206,6 +277,13 @@ drawGame:-
 			===================================
  **/
 
+/**
+ * checkVictory(+Tab,+Player,+Length).
+ * Checks if a victory occurs
+ * @param Tab - Current Board
+ * @param Player - Current Player
+ * @param Length - Board Length
+ */
 checkVictory(Tab, Player, Length):-
 	
 	K is Length - 1,
@@ -215,24 +293,56 @@ checkVictory(Tab, Player, Length):-
 		checkBiggerDiagonals(Tab, Length, Player)
 	).
 
+/**
+ * wonGame(+Player).
+ * Prints specific player win message and returns to main menu 
+ * @param Player - Winning Player
+ */
 wonGame(Player):-
 	write('Player '), write(Player), write(' won!'), nl, 
 	mainMenu.
 
+/**
+ * isConnected(+Player,+List).
+ * Checks if the same piece is repeated 3 times on a row
+ * @param Player - Player to check
+ * @param List - List of pieces
+ */
 isConnected(Player, List):-
 	Piece is Player + 1,
 	sublist([Piece, Piece, Piece], List).
 
+/**
+ * checkColumns(+Tab,+Player,+N).
+ * Checks if the same piece is repeated 3 times on a row in any column
+ * @param Tab - Current Board 
+ * @param Player - Player to check 
+ * @param N - Board Length
+ */
 checkColumns(Tab, Player, N):-
 	between(0, N, N1), 
 	getColumnN(Tab, N1, Col), 
 	isConnected(Player, Col).
 
+/**
+ * checkColumns(+Tab,+Player,+N).
+ * Checks if the same piece is repeated 3 times on a row in any row
+ * @param Tab - Current Board 
+ * @param Player - Player to check 
+ * @param N - Board Length
+ */
 checkRows(Tab, Player, N):-
 	between(0, N, N1), 
 	nth0(N1, Tab, Row), 
 	isConnected(Player, Row).
 
+/**
+ * checkBiggerDiagonals(+Tab,+Length,+Player).
+ * Checks if the same piece is repeated 3 times on a row in any diagonal
+ * @param Tab - Current Board 
+ * @param Length - Board Length
+ * @param Player - Player to check 
+ */
 checkBiggerDiagonals(Tab, Length, Player):-
 	K is Length - 2,
 	between(0, K, Offset), 
