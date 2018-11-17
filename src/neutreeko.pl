@@ -18,17 +18,15 @@
 startPvPGame:-
 	tab(Tab),
 	Player is 1,
-	assertz(map(Tab, 1)),
 	playPvPGame(Tab, Player).
 
 playPvPGame(Tab, Player):-
 	cls,
 	length(Tab, N),
 	display_board(Tab),
-	announcePlayer(Player),
-	repeat,  
-		askUserInput(Row, Col, N),
-		askUserMove(Move),
+	askUserInput(Row, Col, N),
+	askUserMove(Move),
+	(
 		getPiece(Row, Col, Tab, Piece),
 		valid_move(Tab,Player,Row,Col,Move,Piece),
 	move([Row, Col, Move], Piece, Tab, OutTab),
@@ -47,24 +45,21 @@ playPvPGame(Tab, Player):-
 
 
 
-
 /**
 			===================================
 			========== Player vs Bot ==========
 			===================================
  **/
 
-startPvBGame(Mode, FirstPlayer):-
+startPvBGame(Mode):-
 	tab(Tab),
-	Player = 1,
-	assertz(map(Tab, 1)),
-	playPvBGame(Tab, Player, Mode, FirstPlayer).
+	Player is 1, 
+	playPvBGame(Tab, Player, Mode).
 
 playPvBGame(Tab, Player,Mode, FirstPlayer):-
 	
 	length(Tab, N),
 	display_board(Tab),
-	announcePlayer(Player),
 	(
 		Player = FirstPlayer, 
 		repeat,
@@ -80,18 +75,10 @@ playPvBGame(Tab, Player,Mode, FirstPlayer):-
 		;
 		Mode = 3, minimax(Tab, Player, 1, 2, _, OutTab)	
 	),
-	(
-		checkVictory(OutTab, Player, N), 
-		display_board(OutTab), 
-		wonGame(Player)
-		; 
-		checkDraw(OutTab),
-		display_board(OutTab),
-		drawGame
-		;
-		nextPlayer(Player, NextPlayer),
-		playPvBGame(OutTab, NextPlayer, Mode, FirstPlayer)
-	).
+	(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
+	NPlayer is Player + 1,
+	NextPlayer is mod(NPlayer, 2), 
+	playPvBGame(OutTab, NextPlayer, Mode).
 
 
 
@@ -105,16 +92,13 @@ playPvBGame(Tab, Player,Mode, FirstPlayer):-
 startBvBGame(Mode):-
 	tab(Tab), 
 	Player is 1, 
-	assertz(map(Tab, 1)),
 	playBvBGame(Tab, Player, Mode).
 
 playBvBGame(Tab, Player, Mode):-
-	cls,
 	length(Tab, N),
 	display_board(Tab),
 	(
-		Mode = 1, botPlay(Tab, Player, OutTab)
-		;
+		Mode = 1, botPlay(Tab, Player, OutTab);
 		Mode = 2, botPlayGreedy(Tab, Player, OutTab)
 		;
 		Mode = 3, minimax(Tab, Player, 1, 2, _, OutTab)
@@ -132,9 +116,12 @@ playBvBGame(Tab, Player, Mode):-
 			playBvBGame(OutTab, NextPlayer, Mode)
 	).
 
-nextPlayer(Player, NextPlayer):-
+	),
+	(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
 	NPlayer is Player + 1,
-	NextPlayer is mod(NPlayer, 2).
+	NextPlayer is mod(NPlayer, 2), 
+	playBvBGame(OutTab, NextPlayer, Mode).
+
 
 main:- 
 	mainMenu.
