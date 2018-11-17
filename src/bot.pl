@@ -1,7 +1,6 @@
-:- use_module(library(lists)).
 /**
 			===================================
-			========= Bot Play Levels =========
+			============= Bot Play ============
 			===================================
  **/
 
@@ -13,33 +12,22 @@
  * @param Player - Current Player
  * @param OutTab - Board after bot play
  **/
-botPlay(Tab, Player, OutTab):-
-	valid_moves(Tab, Player, MovesList),
-	length(MovesList, L), 
-	random(0, L, Index), 
-	nth0(Index, MovesList, Move), 
-	Move = [Row, Col, Dir], 
+botPlay(Board, Player, Level, OutBoard):-
+	choose_move(Board, Player, Level, Move), 
 	Piece is Player + 1, 
-	move([Row, Col, Dir], Piece, Tab, OutTab).
+	move(Move, Piece, Board, OutBoard).
 
-/**
- * botPlayGreedy(+Tab, +Player, -OutTab).
- * Plays the greedy bot 
- * Following the heuristic present in evaluateBoard(+Tab, +Player, -Value, +Length)
- * it calculates all the possible moves, evaluating them.
- * Then it selects the best future move, based on such evaluation, and makes it.
- * @param Tab - Current Board
- * @param Player - Current Player
- * @param OutTab - Board after bot play
- **/
 
-botPlayGreedy(Tab, Player, OutTab):-
-	move_and_evaluate(Tab, Player, MovesList),
-	nth0(0, MovesList, Move), 
-	Move = [_, Row, Col, Dir], 
-	Piece is Player + 1, 
-	move([Row, Col, Dir], Piece, Tab, OutTab).
-
+choose_move(Board, Player, Level, Move):-
+	(
+		Level = 1,
+			valid_moves(Board, Player, MovesList),
+			length(MovesList, L), 
+			random(0, L, Index), 
+			nth0(Index, MovesList, Move);
+		Level = 2, 
+			move_and_evaluate(Board, Player, Move)
+	).
 /*
 			===================================
 */
@@ -54,7 +42,7 @@ botPlayGreedy(Tab, Player, OutTab):-
  **/
 
 /*
- * evaluateBoard(+Tab, +Player, -Value, +Length).
+ * value(+Tab, +Player, -Value, +Length).
  * Evaluates the board following an heuristic.
  * The heuristcs takes in consideration the following main points:
  * 			-if it can win with such moves, gives it the highest value possible, 1000.
@@ -67,8 +55,8 @@ botPlayGreedy(Tab, Player, OutTab):-
  * @param Value - Board value following the heuristic
  * @param Length - Length of the board
 */
-evaluateBoard(Tab, Player, Value, Length):-
-		checkVictory(Tab, Player, Length),	Value = 1000;
+value(Tab, Player, Value, Length):-
+		game_over(Tab, Player, Length),	Value = 1000;
 		checkTwoConnected(Tab, Player, Length, Total),
 		Total15 is Total * 15, 
 		valid_moves(Tab, Player, MovesList),
@@ -92,7 +80,7 @@ evaluateMove(Tab, Player, Move, Value, Length, OutTab):-
 	Move = [Row, Col, Move],
 	Piece is Player + 1,
 	move([Row, Col, Move], Piece, Tab, OutTab),
-	evaluateBoard(OutTab, Player, Value, Length).
+	value(OutTab, Player, Value, Length).
 
 
 /**
@@ -184,7 +172,7 @@ minimax(Tab, Player, State, Depth, NextVal, NextTab):-
 	best(Tab, Player, State, MovesList, NewDepth, NextTab, NextVal), !
 	;
 	length(Tab, Length), 
-	evaluateBoard(Tab, Player, NextVal, Length), 
+	value(Tab, Player, NextVal, Length), 
 	NextTab = Tab.
 
 best(Tab, Player, State, [Move], Depth, BestTab, BestVal):- 

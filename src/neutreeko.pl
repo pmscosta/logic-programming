@@ -33,7 +33,7 @@ playPvPGame(Tab, Player):-
 		valid_move(Tab,Player,Row,Col,Move,Piece),
 	move([Row, Col, Move], Piece, Tab, OutTab),
 	(
-			checkVictory(OutTab, Player, N), 
+			game_over(OutTab, Player, N), 
 			display_board(OutTab), 
 			wonGame(Player)
 			; 
@@ -69,19 +69,21 @@ playPvBGame(Tab, Player,Mode, FirstPlayer):-
 		Player = FirstPlayer, 
 		repeat,
 			askUserInput(Row, Col, N),
+			write(Row), nl, write(Col), nl, 
 			askUserMove(Move),
+			write(Move), nl, 
 			getPiece(Row, Col, Tab, Piece),
 			valid_move(Tab,Player,Row,Col,Move,Piece),
 		move([Row, Col, Move], Piece, Tab, OutTab)
 		;
-		Mode = 1, botPlay(Tab, Player, OutTab)
+		Mode = 1, botPlay(Tab, Player, 1,  OutTab)
 		;
-		Mode = 2, botPlayGreedy(Tab, Player, OutTab)
+		Mode = 2, botPlay(Tab, Player, 2, OutTab)
 		;
 		Mode = 3, minimax(Tab, Player, 1, 2, _, OutTab)	
 	),
 	(
-		checkVictory(OutTab, Player, N), 
+		game_over(OutTab, Player, N), 
 		display_board(OutTab), 
 		wonGame(Player)
 		; 
@@ -113,14 +115,14 @@ playBvBGame(Tab, Player, Mode):-
 	length(Tab, N),
 	display_board(Tab),
 	(
-		Mode = 1, botPlay(Tab, Player, OutTab)
+		Mode = 1, botPlay(Tab,Player,1,OutTab)
 		;
-		Mode = 2, botPlayGreedy(Tab, Player, OutTab)
+		Mode = 2, botPlay(Tab,Player,2,OutTab)
 		;
 		Mode = 3, minimax(Tab, Player, 1, 2, _, OutTab)
 	),
 	(
-			checkVictory(OutTab, Player, N), 
+			game_over(OutTab, Player, N), 
 			display_board(OutTab), 
 			wonGame(Player)
 			; 
@@ -136,5 +138,5 @@ nextPlayer(Player, NextPlayer):-
 	NPlayer is Player + 1,
 	NextPlayer is mod(NPlayer, 2).
 
-main:- 
+play:- 
 	mainMenu.

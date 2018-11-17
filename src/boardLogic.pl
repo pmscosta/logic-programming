@@ -113,13 +113,13 @@ checkBoundaries(Position, Lenght):-
 	).
 
 
-move(Move, Piece, Board, OutBoard):-
+move(Move, Piece, Board, NewBoard):-
 	Move = [Row, Col, Dir],
 	colTranslate(Dir, MoveCol),
 	rowTranslate(Dir, MoveRow),
 	replaceElemMatrix(Row, Col, 0, Board, NBoard),
 	length(Board, N),
-	movePiece(Row, Col, MoveCol, MoveRow, Piece, NBoard, OutBoard, N).
+	movePiece(Row, Col, MoveCol, MoveRow, Piece, NBoard, NewBoard, N).
 
 movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 	NextRow is Row + MoveRow, 
@@ -127,11 +127,11 @@ movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 	checkBoundaries(NextRow, BoardLength),
 	checkBoundaries(NextCol, BoardLength),
 	getPiece(NextRow, NextCol, Board, NextPiece), 
-	NextPiece = 0 -> movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength);
-					 replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
+	NextPiece = 0, !,
+	movePiece(NextRow, NextCol, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength);
+	replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
 
 valid_move(Board,Player,Row,Col,Move, Piece):-
-	integer(Move),
 	between(1, 9, Move),
 	Move \= 5,
 	Piece =:= (Player + 1),
@@ -144,22 +144,26 @@ valid_move(Board,Player,Row,Col,Move, Piece):-
 	checkBoundaries(NextCol, BoardLength),
 	checkEmpty(Board,NextRow,NextCol). 
 
-valid_moves(Board, Player, MovesList):-
+valid_moves(Board, Player, ListOfMoves):-
 	NPiece is Player + 1, 
-	findall([Row, Col, Move], ( getPiece(Row, Col, Board, NPiece), 
+	findall([Row, Col, Move], ( getPiece(Row, Col, Board, NPiece),
 								valid_move(Board, Player, Row, Col, Move, NPiece)), 
-								MovesList).
+								ListOfMoves).
 
-move_and_evaluate(Board, Player, MovesList):-
+move_and_evaluate(Board, Player, Move):-
 	length(Board, N),
 	K is N - 1, 
 	NPiece is Player + 1, 
 	findall([Value, Row, Col, Move],( getPiece(Row, Col, Board, NPiece), 
 								valid_move(Board, Player, Row, Col, Move, NPiece), 
 								move([Row, Col, Move], NPiece, Board, OutTab),
-								evaluateBoard(OutTab, Player, Value, K)), Moves),
+								value(OutTab, Player, Value, K)), Moves),
 	sort(Moves, TempMoves),
-	reverse(TempMoves, MovesList).
+	reverse(TempMoves, MovesList), 
+	nth0(0, MovesList, Temp), 
+	Temp = [_, A, B, C],
+	Move = [A, B, C].
+
 /*
 			===================================
 */
@@ -197,6 +201,8 @@ flatten2(L, [L]).
 drawGame:-
 	write('The same position occurred 3 times!'), nl, 
 	write('This match is a draw!'), nl, 
+	write('Press Enter to continue'), 
+	waitForKeyPress, !,
 	mainMenu.
 
 
@@ -206,17 +212,18 @@ drawGame:-
 			===================================
  **/
 
-checkVictory(Tab, Player, Length):-
-	
+game_over(Board, Player, Length):-
 	K is Length - 1,
 	(
-		checkColumns(Tab, Player, K);
-		checkRows(Tab, Player, K);
-		checkBiggerDiagonals(Tab, Length, Player)
+		checkColumns(Board, Player, K);
+		checkRows(Board, Player, K);
+		checkBiggerDiagonals(Board, Length, Player)
 	).
 
 wonGame(Player):-
 	write('Player '), write(Player), write(' won!'), nl, 
+	write('Press Enter to continue'), 
+	waitForKeyPress, !, 
 	mainMenu.
 
 isConnected(Player, List):-
