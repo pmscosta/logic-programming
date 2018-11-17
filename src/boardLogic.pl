@@ -131,6 +131,7 @@ movePiece(Row, Col, MoveCol, MoveRow, Piece, Board, OutBoard, BoardLength):-
 					 replaceElemMatrix(Row, Col, Piece, Board, OutBoard).
 
 valid_move(Board,Player,Row,Col,Move, Piece):-
+	integer(Move),
 	between(1, 9, Move),
 	Move \= 5,
 	Piece =:= (Player + 1),
