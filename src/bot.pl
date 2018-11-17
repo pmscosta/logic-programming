@@ -164,6 +164,16 @@ checkTwoBiggerDiagonals(Tab, Player, Length, Value):-
 			===================================
  **/
 
+/**
+ * minimax(+Tab, +Player, +State, +Depth, -NextVal, -NextTab). 
+ * Applies minimax algorithm to find best next play, returning the best board and respective value
+ * @param Tab - Current Board
+ * @param Player - Player that is gonna perform initial play 
+ * @param State - Current State of the game, player to play, inside minimax 
+ * @param Depth - Amount of levels for minimax
+ * @param NextVal - Best value from taking a move (NextTab value)
+ * @param NextTab - Best valued board from taking a move 
+ **/
 minimax(Tab, Player, State, Depth, NextVal, NextTab):-
 
 	Depth > 0, 
@@ -175,6 +185,18 @@ minimax(Tab, Player, State, Depth, NextVal, NextTab):-
 	value(Tab, Player, NextVal, Length), 
 	NextTab = Tab.
 
+
+/**
+ * best(+Tab, +Player, +State,+[Move], +Depth, -BestVal, -BestTab). 
+ * Base case for best function, applies the last possible move.
+ * @param Tab - Current Board
+ * @param Player - Player that is gonna perform initial play 
+ * @param State - Current State of the game, player to play, inside minimax 
+ * @param Move - Next possible move to apply to Tab
+ * @param Depth - Amount of levels for minimax
+ * @param BestTab - Best valued board from taking the move 
+ * @param BestVal - Best value from taking the move (NextTab value)
+ **/
 best(Tab, Player, State, [Move], Depth, BestTab, BestVal):- 
 
 	Move = [Row, Col, Dir], 
@@ -186,8 +208,18 @@ best(Tab, Player, State, [Move], Depth, BestTab, BestVal):-
 
 	minimax(OutTab, NextPlayer, NextState, Depth, BestVal, BestTab), !.
 
+/**
+ * best(+Tab, +Player, +State,+[Move|NextMoves], +Depth, -BestVal, -BestTab). 
+ * Iterates over all the possible moves from a specific state and board, returning the highest value one
+ * @param Tab - Current Board
+ * @param Player - Player that is gonna perform initial play 
+ * @param State - Current State of the game, player to play, inside minimax 
+ * @param [Move|NextMoves] - List of all possible moves to apply to Tab in current State
+ * @param Depth - Amount of levels for minimax
+ * @param BestTab - Best valued board from taking the move 
+ * @param BestVal - Best value from taking the move (NextTab value)
+ **/
 best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
-
 
 	Move = [Row, Col, Dir], 
 	Piece is Player + 1, 
@@ -203,6 +235,17 @@ best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
 	betterOf(OutTab, Val1, Tab2, Val2, BestTab, BestVal, State).
 
 
+
+/**
+ * betterOf(+Tab1, +Val1, +_, +Val2, -Tab1, -Val1, +State). 
+ * Checks if Tab1 is better valued than Tab2,if so returns Tab1 and respective value as best action
+ * @param Tab1 - Board option 1
+ * @param Val1 - Value from option 1
+ * @param Val2 - Value from option 2
+ * @param Tab1 - Best Board, in this case, Tab1
+ * @param Val1 - Value from best board, Tab1
+ * @param State - Player to move
+ **/
 betterOf(Tab1, Val1, _, Val2, Tab1, Val1, State) :-   
     State = 1,                         
     Val1 > Val2, !                             
@@ -210,9 +253,29 @@ betterOf(Tab1, Val1, _, Val2, Tab1, Val1, State) :-
     State = 0,                         
     Val1 < Val2, !.                            
 
+
+/**
+ * betterOf(+_, +_, Tab2, +Val2, -Tab1, -Val1, +State). 
+ * If the other call of betterOf fails, it's Tab2 the best play, so this assigns Tab2 as the best action to take
+ * @param Tab2 - Board option 2
+ * @param Val2 - Value from option 2
+ * @param Tab2 - Best Board, in this case, Tab2
+ * @param Val2 - Value from best board, Tab2
+ * @param State - Player to move
+ **/
 betterOf(_, _, Tab2, Val2, Tab2, Val2, _).      
 
 
+
+/**
+ * nextTurn(+Player, +State, -NextPlayer, -NextState).
+ * Switches turns, updating Player and State
+ * @param Tab - Current Board
+ * @param Player - Player that played before
+ * @param State - Past State
+ * @param NextPlayer - Player updated
+ * @param NextState - State updated 
+ **/
 nextTurn(Player, State, NextPlayer, NextState):-
 	NPlayer is Player + 1,
 	NextPlayer is mod(NPlayer, 2), 
