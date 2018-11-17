@@ -133,15 +133,16 @@ checkBoundaries(Position, Lenght):-
 		true
 	).
 
-move(Move, Piece, Board, NewBoard):-
+
 /**
- * move(+Move, +Piece, +Board, -OutBoard).
+ * move(+Move, +Piece, +Board, -NewBoard).
  * Moves the piece with the move, returning the resulting board (OutBoard)
  * @param Move - Move to take
  * @param Piece - Piece to move
  * @param Board - Current Board
- * @param OutBoard - Resulting board
+ * @param NewBoard - Resulting board
  */
+move(Move, Piece, Board, NewBoard):-
 	Move = [Row, Col, Dir],
 	colTranslate(Dir, MoveCol),
 	rowTranslate(Dir, MoveRow),
@@ -194,27 +195,28 @@ valid_move(Board,Player,Row,Col,Move, Piece):-
 	checkBoundaries(NextCol, BoardLength),
 	checkEmpty(Board,NextRow,NextCol). 
 
-valid_moves(Board, Player, ListOfMoves):-
 /**
- * valid_moves(+Board,+Player,-MovesList).
+ * valid_moves(+Board,+Player,-ListOfMoves).
  * Finds all valid moves regarding the player to play
  * @param Board - Current Board
  * @param Player - Current Player
- * @param MovesList - List of valid moves to take
+ * @param ListOfMoves - List of valid moves to take
  */
+valid_moves(Board, Player, ListOfMoves):-
 	NPiece is Player + 1, 
 	findall([Row, Col, Move], ( getPiece(Row, Col, Board, NPiece),
 								valid_move(Board, Player, Row, Col, Move, NPiece)), 
 								ListOfMoves).
 
 /**
- * move_and_evaluate(+Board,+Player,-MovesList).
- * Finds all valid moves including the value from the move regarding the player to play including, returs the list ordered by higher value 
+ * move_and_evaluate(+Board,+Player,-BestMove).
+ * Finds all valid moves including the value from the move regarding the player to play including, ordered by higher value 
+ * Returns the highest scoring Move
  * @param Board - Current Board
  * @param Player - Current Player
- * @param MovesList - List of valid moves to take
+ * @param BestMove - The highest scoring move
  */
-move_and_evaluate(Board, Player, Move):-
+move_and_evaluate(Board, Player, BestMove):-
 	length(Board, N),
 	K is N - 1, 
 	NPiece is Player + 1, 
@@ -226,7 +228,7 @@ move_and_evaluate(Board, Player, Move):-
 	reverse(TempMoves, MovesList), 
 	nth0(0, MovesList, Temp), 
 	Temp = [_, A, B, C],
-	Move = [A, B, C].
+	BestMove = [A, B, C].
 
 /*
 			===================================
@@ -284,7 +286,7 @@ drawGame:-
  **/
 
 /**
- * checkVictory(+Tab,+Player,+Length).
+ * game_over(+Tab,+Player,+Length).
  * Checks if a victory occurs
  * @param Tab - Current Board
  * @param Player - Current Player

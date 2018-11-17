@@ -18,15 +18,17 @@
 startPvPGame:-
 	tab(Tab),
 	Player is 1,
+	assertz(map(Tab, 1)),
 	playPvPGame(Tab, Player).
 
 playPvPGame(Tab, Player):-
 	cls,
 	length(Tab, N),
 	display_board(Tab),
-	askUserInput(Row, Col, N),
-	askUserMove(Move),
-	(
+	announcePlayer(Player),
+	repeat,  
+		askUserInput(Row, Col, N),
+		askUserMove(Move),
 		getPiece(Row, Col, Tab, Piece),
 		valid_move(Tab,Player,Row,Col,Move,Piece),
 	move([Row, Col, Move], Piece, Tab, OutTab),
@@ -45,21 +47,24 @@ playPvPGame(Tab, Player):-
 
 
 
+
 /**
 			===================================
 			========== Player vs Bot ==========
 			===================================
  **/
 
-startPvBGame(Mode):-
+startPvBGame(Mode, FirstPlayer):-
 	tab(Tab),
-	Player is 1, 
-	playPvBGame(Tab, Player, Mode).
+	Player = 1,
+	assertz(map(Tab, 1)),
+	playPvBGame(Tab, Player, Mode, FirstPlayer).
 
 playPvBGame(Tab, Player,Mode, FirstPlayer):-
 	
 	length(Tab, N),
 	display_board(Tab),
+	announcePlayer(Player),
 	(
 		Player = FirstPlayer, 
 		repeat,
@@ -102,9 +107,11 @@ playPvBGame(Tab, Player,Mode, FirstPlayer):-
 startBvBGame(Mode):-
 	tab(Tab), 
 	Player is 1, 
+	assertz(map(Tab, 1)),
 	playBvBGame(Tab, Player, Mode).
 
 playBvBGame(Tab, Player, Mode):-
+	cls,
 	length(Tab, N),
 	display_board(Tab),
 	(
@@ -112,7 +119,7 @@ playBvBGame(Tab, Player, Mode):-
 		;
 		Mode = 2, botPlay(Tab,Player,2,OutTab)
 		;
-		Mode = 3, minimax(Tab, Player, 1, 2, _, OutTab)
+		Mode = 3, minimax(Tab, Player, 1, 3, _, OutTab)
 	),
 	(
 			game_over(OutTab, Player, N), 
@@ -127,11 +134,9 @@ playBvBGame(Tab, Player, Mode):-
 			playBvBGame(OutTab, NextPlayer, Mode)
 	).
 
-	),
-	(checkVictory(OutTab, Player, N) -> display_board(OutTab), wonGame(Player); true ),
+nextPlayer(Player, NextPlayer):-
 	NPlayer is Player + 1,
-	NextPlayer is mod(NPlayer, 2), 
-	playBvBGame(OutTab, NextPlayer, Mode).
+	NextPlayer is mod(NPlayer, 2).
 
 play:- 
 	mainMenu.
