@@ -40,42 +40,105 @@ rowTranslate(9, -1).
 			===================================
  **/
 
+/**
+ * replaceElemMatrix(+Row, +Col, +Elem, +Matrix, -OutMatrix)
+ * 
+ * When the reach the specific row, start iterating the columns.
+ * */
+
 replaceElemMatrix(0, Col, Elem, [L|Ls], [R|Ls]):-
 	replaceElemCol(Col, Elem, L, R).
 
+/**
+ * replaceElemMatrix(+Row, +Col, +Elem, +Matrix, -OutMatrix)
+ * 
+ * Creates a new matrix (OutMatrix) by replacing an older
+ * 	 matrix elem in row Row and column Col by Elem.
+ *
+ * Starts by iterating all the rows until the one wanted is met.
+ * */
 replaceElemMatrix(Row, Col, Elem, [L|Ls], [L|Rs]):-
 	Row > 0, 
 	NRow is Row - 1, 
 	replaceElemMatrix(NRow, Col, Elem, Ls, Rs).
 
+
+/**
+ * replaceElemCol(Col, Elem, +Row, -OutRow)
+ * 
+ * When we get to the Col we want, replace it.
+ */
 replaceElemCol(0, Elem , [_|Cs], [Elem|Cs]).
 
+/**
+ * replaceElemCol(Col, Elem, +Row, -OutRow)
+ * 
+ * Creates a new row by replacing and older row elemnt
+ * 	 in the position Col by Elem.
+ * 
+ * Starts iterating the row until the one wanted is met
+ */
 replaceElemCol(Col, Elem, [C|Cs], [C|Rs]):-
 	Col > 0, 
 	NCol is Col - 1, 
 	replaceElemCol(NCol, Elem, Cs, Rs).
 
+/**
+ * getPiece(+Row, +Col, +Board, -Elem)
+ * 
+ * Retrives a board piece in row Row and col Col, storing it in Elem
+ * */
 getPiece(Row, Col, Board, Elem):-
 	nth0(Row, Board, RowList),
 	nth0(Col, RowList, Elem).
 
+
+
+
 getRowN([H|_], 0, H):- !.
 
+/**
+ * getRowN(+Board, +Index, -Elem)
+ * 
+ * Retrieves and element from a row at posiion Index
+ * 
+ * 
+ * */
 getRowN([_|T], N, X) :-
 	N1 is N - 1, 
 	getRowN(T, N1, X).
 
 getColumnN([], _, []).
-
+/**
+ * getColumnN(+Board, +Index, -Col)
+ * Retrives a column from the board at index Index. 
+ * 
+ * Iterates all the rows searching for the element in that row in position Index
+ */
 getColumnN([H|T], N, [R|X]):-
 	getRowN(H, N, R),
 	getColumnN(T, N, X).
 
 
-getColumns(Tab, Lenght, Cols):-
-	findall(C, (between(0, Lenght, I), getColumnN(Tab, I, C)), Cols).
-
-
+/**getDiagonal(+Board, -Diag, -UpDiag, -SecDiag, -SecUpDiag, +Offset)
+ * 
+ * Returns all the boards diagonals (from right to left and left to right).
+ * Allows for an offset to be specified. We might not want only the main diagonal, 
+ * but one that is one column above that one.
+ * E.g.
+			[ 01, 02, 03, 04 ]
+			[ 05, 06, 07, 08 ]
+			[ 09, 10, 11, 12 ]
+			[ 13, 14, 15, 16 ]
+		
+	With offset = 1, we would obtain the following diagonals
+		:Diag = [05, 10, 15]
+		:UpDiag = [02, 07, 12]
+		:SecDiag = [08, 11, 14]
+		:SecUpDiag = [03, 06, 09]
+			
+ * 
+ * */
 getDiagonal(Board, Diag, UpDiag, SecDiag, SecUpDiag, Offset):-
 	length(Board, K), 
 	N is K - 1,
@@ -260,6 +323,12 @@ checkDraw(Tab):-
 	
 
 flatten2([], []):- !.
+
+/**
+ * flatten2(+Matrix, -List)
+ * 
+ * Collapses a Matrix (List of lists) into a single list
+ * */
 flatten2([L|Ls], Flat):-
 	!,
 	flatten2(L, NewL),
