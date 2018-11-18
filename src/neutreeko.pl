@@ -72,12 +72,34 @@ playPvPGame(Tab, Player):-
 			===================================
  **/
 
+
+/**
+ * startPvBGame(+Mode, +FirstPlayer)
+ * 
+ * Initiates a Player vs Bot Game
+ * 
+ * 
+ * Creates the Board , creates the player and calls the game main cycle 
+ * 
+ * @param Mode - the bot difficulty mode; 1 -> random, 2->greedy, 3->minimax
+ * @param FirstPlayer - who will play first, 1 -> human goes first, 0 -> bot goes first
+ * 
+ * */
 startPvBGame(Mode, FirstPlayer):-
-	tab(Tab),
+	tab(Tab), 
 	Player = 1,
 	assertz(map(Tab, 1)),
 	playPvBGame(Tab, Player, Mode, FirstPlayer).
 
+
+/**
+ * playPvBGame(+Tab, +Player, +Mode, +FirstPlayer)
+ * 
+ * PvB Game Cycle
+ * 
+ * This functions handles all of the game iterations.
+ * Asks for the user input (when it is the human turn), makes the moves until the finished game conditions are met.
+ */
 playPvBGame(Tab, Player,Mode, FirstPlayer):-
 	cls,
 	length(Tab, N),
@@ -119,13 +141,31 @@ playPvBGame(Tab, Player,Mode, FirstPlayer):-
 			===================================
  **/
 
-
+/**
+ * startBvBGame(+Mode)
+ * 
+ * Initiates a Bot vs Bot Game
+ * 
+ * Creates the Board , creates the player and calls the game main cycle 
+ * 
+ * @param Mode - the bot difficulty mode; 1 -> random, 2->greedy, 3->minimax
+ * */
 startBvBGame(Mode):-
 	tab(Tab), 
 	Player is 1, 
 	assertz(map(Tab, 1)),
 	playBvBGame(Tab, Player, Mode).
 
+
+/**
+ * playBvBGame(+Tab, +Player, +Mode)	
+ * 
+ * BvB Game Cycle
+ * 
+ * This functions handles all of the game iterations.
+ * Unlike the others, does not need to ask for user input since there's no human involved.
+ * Just plays the moves given by the bot algorithms.
+ */
 playBvBGame(Tab, Player, Mode):-
 	cls,
 	length(Tab, N),

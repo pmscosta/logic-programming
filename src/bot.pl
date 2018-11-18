@@ -17,7 +17,16 @@ botPlay(Board, Player, Level, OutBoard):-
 	Piece is Player + 1, 
 	move(Move, Piece, Board, OutBoard).
 
-
+/**
+ * choose_move(+Board, +Player, +Level, -Move)
+ * 
+ * Places in Move the next move to be done by the bot.
+ * Depending on the level (1->random, 2->greedy), selects the move differently.
+ * 
+ * If it is Level 1: selects a random move from the valid ones
+ * Else, selects the best move of all the valid ones, given the value function.
+ * 
+ * */
 choose_move(Board, Player, Level, Move):-
 	(
 		Level = 1,
@@ -102,12 +111,13 @@ evaluateMove(Tab, Player, Move, Value, Length, OutTab):-
 
 
 /**
- * checkTwoConnected(+Tab, +Player, +Length).
+ * checkTwoConnected(+Tab, +Player, +Length, -TotalConnected).
  * Checks if there are two pieces connected, horizontally,
- * vertically or diagonally
+ * vertically or diagonally, storing how many there are in TotalConnected
  * @param Tab - Current Tab
  * @param Player - Current Player
  * @param Length - Length of the board
+ * @þaram TotalConnected - number of connected pices
  **/
 checkTwoConnected(Tab, Player, Length, TotalConnected):-
 	K is Length - 1,
@@ -129,11 +139,12 @@ isTwoConnected(Player, List):-
 	sublist([Piece, Piece], List).
 
 /**
- *checkTwoColumns(+Tab, +Player, +Length).
+ *checkTwoColumns(+Tab, +Player, +Length, -Value).
  * Checks if there are two pieces connected together in a column
  * @param Tab - Current Board
  * @param Player - Current Player
  * @param Length - Board Length 
+ * @param Value - 1 if there are any, 0 otherwise
  **/
 checkTwoColumns(Tab, Player, Length, Value):-
 	between(0, Length, N1), 
@@ -145,11 +156,12 @@ checkTwoColumns(Tab, Player, Length, Value):-
 	
 
 /**
- *checkTwoRows(+Tab, +Player, +Length).
+ *checkTwoRows(+Tab, +Player, +Length, -Value).
  * Checks if there are two pieces connected together in a row
  * @param Tab - Current Board
  * @param Player - Current Player
  * @param Length - Board Length 
+ * @param Value - 1 if there are any, 0 otherwise
  **/
 checkTwoRows(Tab, Player, Length, Value):-
 	between(0, Length, N1), 
@@ -158,7 +170,14 @@ checkTwoRows(Tab, Player, Length, Value):-
 	Value = 1;
 	Value = 0.
 
-
+/**
+ * checkTwoBiggerDiagonals(+Tab, +Player, +Length, -Value).
+ * Checks if there are two pieces connected together in any diagonal of the matrix
+ * @param Tab - Current Board
+ * @param Player - Current Player
+ * @param Length - Board Length 
+ * @param Value - 1 if there are any, 0 otherwise
+ **/
 checkTwoBiggerDiagonals(Tab, Player, Length, Value):-
 	K is Length - 2,
 	between(0, K, Offset), 
