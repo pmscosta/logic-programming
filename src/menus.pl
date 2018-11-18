@@ -17,7 +17,7 @@ mainMenu:-
      nl,
     (
         X = 1, !, playMenu;
-        X = 2, !, mainMenu; 
+        X = 2, !, rulesMenu, mainMenu; 
         X = 3, true;
         write('Invalid Choice! Press Enter to try again'), nl,
         waitForKeyPress, 
@@ -124,3 +124,30 @@ printFirstPlayerMenu:-
 
 discard_new_line:-
     get_code(_).
+
+rulesMenu:-
+    cls,
+    printRulesMenu, 
+    nl, 
+    write('Press Enter to go back!'), nl, 
+    waitForKeyPress.
+
+printRulesMenu:-
+    write('***********************************************************************'), nl,
+    write('*                             -Neutreeko-                             *'), nl , 
+    write('***********************************************************************'), nl,
+    write('*                                                                     *'),nl,
+    write('*       1-  A piece slides orthogonally or diagonally until           *'), nl,
+    write('*     stopped by an occupied square or the border of the board.       *'), nl,
+    write('*                                                                     *'),nl,
+    write('*         2- Movement follows the direction of the NumPad             *'), nl,
+    write('*              E.g, 7 means to go up and to the left                  *'), nl,
+    write('*                                                                     *'),nl,
+    write('*                3- Squares always move first                         *'),nl,
+    write('*                                                                     *'),nl,
+    write('*   To win you must get three in a row, orthogonally or diagonally.   *'), nl,
+    write('*                      The row must be connected.                     *'), nl,
+    write('*                                                                     *'),nl,
+    write('* A match is declared a draw if the same position occurs three times. *'), nl, 
+    write('*                                                                     *'),nl,
+    write('***********************************************************************'), nl.

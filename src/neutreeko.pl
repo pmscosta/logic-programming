@@ -61,7 +61,7 @@ startPvBGame(Mode, FirstPlayer):-
 	playPvBGame(Tab, Player, Mode, FirstPlayer).
 
 playPvBGame(Tab, Player,Mode, FirstPlayer):-
-	
+	cls,
 	length(Tab, N),
 	display_board(Tab),
 	announcePlayer(Player),
@@ -69,9 +69,7 @@ playPvBGame(Tab, Player,Mode, FirstPlayer):-
 		Player = FirstPlayer, 
 		repeat,
 			askUserInput(Row, Col, N),
-			write(Row), nl, write(Col), nl, 
 			askUserMove(Move),
-			write(Move), nl, 
 			getPiece(Row, Col, Tab, Piece),
 			valid_move(Tab,Player,Row,Col,Move,Piece),
 		move([Row, Col, Move], Piece, Tab, OutTab)
@@ -119,7 +117,7 @@ playBvBGame(Tab, Player, Mode):-
 		;
 		Mode = 2, botPlay(Tab,Player,2,OutTab)
 		;
-		Mode = 3, minimax(Tab, Player, 1, 3, _, OutTab)
+		Mode = 3, minimax(Tab, Player, 1, 2, _, OutTab)
 	),
 	(
 			game_over(OutTab, Player, N), 
