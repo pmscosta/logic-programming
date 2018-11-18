@@ -34,12 +34,20 @@ askUserInput(Row, Col, N):-
 	getCoordFromAscii(Col), 
 	skip_line.
 
-
+/**
+ * askUserMove(-X)
+ * Asks for User Input Move.
+ * The Move is an integer from 1 to 9, excluding 5. 
+ * @param X - the Move
+ **/
 askUserMove(X):-
 	write(' Insert the move direction: '), 
 	catch(read(X), _, fail),
 	get_code(_).
 
-
+/**
+ * waitForKeyPress
+ * Interrupts the program until the user presses enter
+ **/
 waitForKeyPress:-
 	get_code(_).

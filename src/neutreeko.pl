@@ -15,12 +15,30 @@
 			===================================
  **/
 
+
+/**
+ * startPvPGame
+ * 
+ * Initiates a Player vs Player Game
+ * 
+ * Creates the Board , creates the player and calls the game main cycle 
+ * 
+ * */
 startPvPGame:-
 	tab(Tab),
 	Player is 1,
-	assertz(map(Tab, 1)),
+	assertz(map(Tab, 1)),    %storing the initial board in the map predicate to check for draws
 	playPvPGame(Tab, Player).
 
+
+/**
+ * playPvPGame(+Tab, +Player)
+ * 
+ * PvP Game Cycle
+ * 
+ * This functions handles all of the game iterations.
+ * Asks for the user input, makes the moves until the finished game conditions are met.
+ */
 playPvPGame(Tab, Player):-
 	cls,
 	length(Tab, N),
@@ -132,6 +150,11 @@ playBvBGame(Tab, Player, Mode):-
 			playBvBGame(OutTab, NextPlayer, Mode)
 	).
 
+/**
+ * nextPlayer(+Player, -NextPlayer)
+ * 
+ * States the next player to play in the next round
+ */
 nextPlayer(Player, NextPlayer):-
 	NPlayer is Player + 1,
 	NextPlayer is mod(NPlayer, 2).
