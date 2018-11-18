@@ -59,6 +59,10 @@ value(Tab, Player, Value, Length):-
 		game_over(Tab, Player, Length),	Value = 1000;
 		nextPlayer(Player, NextPlayer), 
 		game_over(Tab, NextPlayer, Length), Value = -1000;
+		(
+		checkDraw(Tab), !, resetMap(Tab), value = 0;
+			resetMap(Tab), fail
+		);		
 		checkTwoConnected(Tab, Player, Length, Total),
 		Total15 is Total * 15, 
 		valid_moves(Tab, Player, MovesList),
@@ -67,6 +71,18 @@ value(Tab, Player, Value, Length):-
 		length(MovesList, N),
 		length(EnemyMoves, E),
 		Value is Total15 + N - E.
+
+/**
+ * resetMap(+Tab)
+ * Decrements a Board appearence in our dynamic predicate map by 1.
+ * Useful when we test for a draw.
+ * @param Tab - the board to be tested
+ */
+resetMap(Tab):-
+	flatten2(Tab, List), 
+	retract(map(List, N)), 
+	NewN is N - 1, 
+	assertz(map(List, NewN)).
 
 /**
  * evaluateMove(+Tab, +Player, +Move, -Value, +Length, -OutTab).
