@@ -11,6 +11,7 @@ printMainMenu:-
 mainMenu:-
     cls,
     printMainMenu, 
+    retractall(map(_, _)),
     catch(read(X), _, fail),
     !,
     discard_new_line,
@@ -80,12 +81,12 @@ botMenu(Mode):-
     (
         Mode = 2, 
         (
+            X = 4, !, playMenu; 
             pickFirstPlayer(First),
             (
                 X = 1, !, startPvBGame(X, First);
                 X = 2, !, startPvBGame(X, First); 
-                X = 3, !, startPvBGame(X, First);
-                X = 4, !, playMenu
+                X = 3, !, startPvBGame(X, First)
             )
         )
         ;

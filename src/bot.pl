@@ -57,6 +57,8 @@ choose_move(Board, Player, Level, Move):-
 */
 value(Tab, Player, Value, Length):-
 		game_over(Tab, Player, Length),	Value = 1000;
+		nextPlayer(Player, NextPlayer), 
+		game_over(Tab, NextPlayer, Length), Value = -1000;
 		checkTwoConnected(Tab, Player, Length, Total),
 		Total15 is Total * 15, 
 		valid_moves(Tab, Player, MovesList),
@@ -247,11 +249,11 @@ best(Tab, Player, State, [Move | NextMoves], Depth, BestTab, BestVal):-
  * @param State - Player to move
  **/
 betterOf(Tab1, Val1, _, Val2, Tab1, Val1, State) :-   
-    State = 1,                         
-    Val1 > Val2, !                             
-    ;
     State = 0,                         
-    Val1 < Val2, !.                            
+    Val1 < Val2, !                             
+    ;
+    State = 1,                         
+    Val1 > Val2, !.                            
 
 
 /**
