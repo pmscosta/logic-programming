@@ -12,18 +12,15 @@ mainMenu:-
     cls,
     printMainMenu, 
     retractall(map(_, _)),
+    repeat,
     catch(read(X), _, fail),
-    !,
     discard_new_line,
      nl,
     (
         X = 1, !, playMenu;
         X = 2, !, rulesMenu, mainMenu; 
         X = 3, true;
-        write('Invalid Choice! Press Enter to try again'), nl,
-        waitForKeyPress, 
-        !,
-        mainMenu
+        invalid
     ).
 
 
@@ -43,8 +40,8 @@ printGamePlayMenu:-
 playMenu:-
     cls,
     printGamePlayMenu, 
+    repeat,
     catch(read(X), _, fail),
-    !,
     discard_new_line,
     nl, 
     (
@@ -53,10 +50,7 @@ playMenu:-
         X = 2, !, botMenu(2); 
         X = 3, !, botMenu(3);
         X = 4, !, mainMenu;
-        write('Invalid Choice! Press Enter to try again'), nl,
-        waitForKeyPress, 
-        !,
-        playMenu
+        invalid
     ).
 
 printBotMenu:-
@@ -75,7 +69,6 @@ botMenu(Mode):-
     printBotMenu, 
     repeat,
     catch(read(X), _, fail),
-    !,
     discard_new_line,
     nl, 
     (
@@ -97,9 +90,7 @@ botMenu(Mode):-
                 X = 3, !, startBvBGame(X);
                 X = 4, !, playMenu
         );
-        write('Invalid Choice! Press Enter to try again'), nl,
-        waitForKeyPress, !,
-        botMenu(Mode)
+        invalid
     ).
 
 
@@ -125,6 +116,9 @@ printFirstPlayerMenu:-
 
 discard_new_line:-
     get_code(_).
+
+invalid:-
+    write('Invalid Choice! Press Enter to try again'), nl, waitForKeyPress, fail.
 
 rulesMenu:-
     cls,
