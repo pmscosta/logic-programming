@@ -48,10 +48,13 @@ playMenu:-
 
         X = 1, !, startPvPGame; 
         X = 2, !, botMenu(2); 
-        X = 3, !, botMenu(3);
+        X = 3, !, botChoice;
         X = 4, !, mainMenu;
         invalid
     ).
+
+
+
 
 printBotMenu:-
     write('***********************'), nl,
@@ -63,6 +66,29 @@ printBotMenu:-
     write('*    3-Mini-Max Bot   *'), nl,
     write('*        4-Back       *'), nl,
     write('***********************'), nl.
+
+
+askBotChoice(Order, Level):-
+    repeat,
+    write(' Enter the level of the '), write(Order), write( ' bot to play: '),
+    catch(read(Level), _, fail),
+    discard_new_line,
+    !,
+    Level \= 4.
+    
+botChoice:-
+    cls,
+    printBotMenu,
+    (
+    askBotChoice('first', Level1),
+    nl, 
+    askBotChoice('second', Level2),
+    startBvBGame(Level1, Level2)
+    ;
+    mainMenu
+    ).
+
+
 
 botMenu(Mode):-
     cls,
@@ -126,6 +152,9 @@ rulesMenu:-
     nl, 
     write('Press Enter to go back!'), nl, 
     waitForKeyPress.
+
+
+
 
 printRulesMenu:-
     write('***********************************************************************'), nl,

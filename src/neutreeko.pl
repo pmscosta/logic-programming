@@ -156,6 +156,11 @@ startBvBGame(Mode):-
 	assertz(map(Tab, 1)),
 	playBvBGame(Tab, Player, Mode).
 
+startBvBGame(Mode1, Mode2):-
+	tab(Tab), 
+	Player is 1, 
+	assertz(map(Tab, 1)),
+	playBvBGame(Tab, Player, Mode1, Mode2).
 
 /**
  * playBvBGame(+Tab, +Player, +Mode)	
@@ -188,6 +193,29 @@ playBvBGame(Tab, Player, Mode):-
 			;
 			nextPlayer(Player, NextPlayer),
 			playBvBGame(OutTab, NextPlayer, Mode)
+	).
+
+playBvBGame(Tab, Player, Mode1, Mode2):-
+	cls,
+	length(Tab, N),
+	display_board(Tab),
+	(
+		Player = 1, !, 
+			botPlay(Tab, Player, Mode1, OutTab)
+		;
+			botPlay(Tab, Player, Mode2, OutTab)	
+	),
+	(
+			game_over(OutTab, Player, N), 
+			display_board(OutTab), 
+			wonGame(Player)
+			; 
+			checkDraw(OutTab),
+			display_board(OutTab),
+			drawGame
+			;
+			nextPlayer(Player, NextPlayer),
+			playBvBGame(OutTab, NextPlayer, Mode1, Mode2)
 	).
 
 /**

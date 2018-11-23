@@ -13,9 +13,14 @@
  * @param OutTab - Board after bot play
  **/
 botPlay(Board, Player, Level, OutBoard):-
-	choose_move(Board, Player, Level, Move), 
-	Piece is Player + 1, 
-	move(Move, Piece, Board, OutBoard).
+	(
+		Level \= 3, !,
+			choose_move(Board, Player, Level, Move), 
+			Piece is Player + 1, 
+			move(Move, Piece, Board, OutBoard)
+		;
+		minimax(Board, Player, 1, 2, _, OutBoard)
+	).
 
 /**
  * choose_move(+Board, +Player, +Level, -Move)
