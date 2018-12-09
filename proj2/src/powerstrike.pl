@@ -1,5 +1,6 @@
 :- use_module(library(clpfd)).
 :- use_module(library(random)).
+:- use_module(library(lists)).
 
 maxValue(First, Mult, Elems, Max):-
     Exp = Elems - 1, 
@@ -14,8 +15,8 @@ addConstrains([A, B | C], Mult):-
     addConstrains([B | C], Mult).
 
 
-pstrike(First, Mult, Elems):-
-    maxValue(First, Mult, Elems, Max),
+pstrike(First, Mult, Elems, Max):-
+    
     length(Numbers, Elems),
     domain(Numbers, 0, Max),
     element(1, Numbers, First), 
@@ -38,4 +39,16 @@ play:-
     random(0, 500, First),
     random(3, 10, Elems), 
     Circle is Elems + 1,
-    pstrike(First, Mult, Circle). 
+    maxValue(First, Mult, Elems, Max),
+    pstrike(First, Mult, Circle, Max). 
+
+
+
+
+/*  ======== SPLIT NUMBER ===============  */
+numbers_atoms(Numbers, Atoms) :-
+    maplist(atom_number, Atoms, Numbers).
+
+digits_number(Digits, Number) :-
+    numbers_atoms(Digits, Atoms),
+    number_codes(Number, Atoms).
