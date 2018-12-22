@@ -1,60 +1,58 @@
-:- use_module(library(clpfd)).
-:- use_module(library(random)).
-:- use_module(library(lists)).
+
+:- consult('gamelogic.pl').
+:-use_module(library(timeout)).
 
 
-number_of_digits(Number, Digits):-
-        X = log(10, Number) + 1,
-        Digits is floor(X).
+writeResult(Label, Time):-
+    write('Execution time: '), write(Time), write(' ms.'), nl,
+    write('Result: '), write(Label), nl.
 
-createExpList(0, List, _, List).
-
-createExpList(Digits, List, Value, Output):-
-    NValue is Value * 10, 
-    append(List, [Value], NList),
-    NDigits is Digits - 1, 
-    createExpList(NDigits, NList, NValue, Output).
-
-createExpList(Digits, List):-
-    createExpList(Digits, [], 1,List).
-
-maxValue(First, Mult, Elems, Max):-
-    Exp = Elems - 2, 
-    Max is floor(First * ( Mult ** Exp)).
-
-
-retractNumber(Number, MaxDigits, ExpList, Subtract, Exponent):-
-    Exponent in 1 .. MaxDigits, 
-    element(Exponent, ExpList, Exp),
-    Subtract #= ( Number // (10 * Exp) ) * Exp + (Number mod Exp).
-
-addConstrains([_], _, _, _,List, List).
-
-addConstrains([A, B | C], Mult, MaxDigits, ExpList, ExpAcc, Exponents):-
-    retractNumber(A, MaxDigits, ExpList, SubtractNumber, Exp),
-    (B #= A * Mult) #\/ (A #>= 10 #/\ B #= SubtractNumber),
-    append(ExpAcc, [Exp], NExpAcc),
-    addConstrains([B | C], Mult, MaxDigits, ExpList, NExpAcc, Exponents).
-
-
-pstrike(First, Mult, Elems, Max, MaxDigits, ExpList):-
-    length(Numbers, Elems),
-    domain(Numbers, 1, Max),
-    element(1, Numbers, First), 
-    element(Elems, Numbers, First),
-    addConstrains(Numbers, Mult, MaxDigits, ExpList, [], Exponents),
-    append(Exponents, Numbers, Label),
-    statistics,
-    labeling([max_regret, bisect], Label), 
-    fd_statistics,
-    statistics, 
-    write(Numbers).
-
-start:-
-    Mult is 2, 
-    First is 6, 
-    Elems is 6,
+writeChosen(F, M, E, O):-
+    format('First Element: ~w ~t Multiplier: ~w ~t Number of Elements: ~w~n Options: ~w ~n', [F, M, E, O]).
+% - Random play of the Game
+solve:-  
+    repeat, 
+    random(2, 20, Mult), 
+    random(2, 80, First), 
+    random(3, 11, Elems),
+    best_option(Options),
     maxValue(First, Mult, Elems, Max),
     number_of_digits(Max, MaxDigits),
-    createExpList(MaxDigits, ExpList),
-    pstrike(First, Mult, Elems, Max, MaxDigits, ExpList). 
+    length(ExpList, MaxDigits),
+    element(1, ExpList, 1), 
+    createExpList(ExpList),
+    time_out(pstrike(First, Mult, Elems, Max, ExpList, Options, Label, Time), 2000, Result), 
+    (
+        Result = success, !,  writeChosen(First, Mult, Elems, Options), writeResult(Label, Time);
+        fail
+    ).
+
+
+% - Starting the game with pre-defined labeling options.
+solve(First, Mult, Elems, Options):-
+    number(Mult), !, number(First), !, number(Elems), !,
+    maxValue(First, Mult, Elems, Max),
+    number_of_digits(Max, MaxDigits),
+    length(ExpList, MaxDigits),
+    element(1, ExpList, 1), 
+    createExpList(ExpList),
+    pstrike(First, Mult, Elems, Max, ExpList, Options, Label, Time),
+    writeResult(Label, Time).
+
+
+
+% - Run the game with pre-defined labeling options
+pstrike(First, Mult, Elems, Max, ExpList, Options, Numbers, ExecutionTime):-
+    NumElems is Elems + 1,
+    length(Numbers, NumElems),
+    domain(Numbers, 1, Max),
+    element(1, Numbers, First), 
+    element(NumElems, Numbers, First),
+    addConstraints(Numbers, Mult, ExpList, [], Exponents),
+    append(Exponents, Numbers, Label),
+    statistics(runtime, [T0 | _]),
+    labeling(Options, Label),
+    statistics(runtime, [T1 | _]),
+    ExecutionTime is T1 - T0.
+
+

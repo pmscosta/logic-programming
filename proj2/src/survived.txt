@@ -1,0 +1,61 @@
+Small Test:
+Options: [leftmost,step,up] Time: 6 Result: success
+Options: [leftmost,bisect,up] Time: 0 Result: success
+Options: [leftmost,bisect,down] Time: 4 Result: success
+Options: [leftmost,middle,up] Time: 3 Result: success
+Options: [leftmost,median,up] Time: 3 Result: success
+Options: [min,bisect,up] Time: 2 Result: success
+Options: [min,bisect,down] Time: 5 Result: success
+Options: [anti_first_fail,bisect,up] Time: 17 Result: success
+Options: [max_regret,step,up] Time: 3 Result: success
+Options: [max_regret,bisect,up] Time: 2 Result: success
+Options: [max_regret,bisect,down] Time: 4 Result: success
+Options: [max_regret,middle,up] Time: 3 Result: success
+Options: [max_regret,median,up] Time: 4 Result: success
+
+Medium Test:
+Options: [leftmost,step,up] Time: 129 Result: success
+Options: [leftmost,bisect,up] Time: 28 Result: success
+Options: [leftmost,bisect,down] Time: 342 Result: success
+Options: [leftmost,middle,up] Time: 128 Result: success
+Options: [leftmost,median,up] Time: 129 Result: success
+Options: [min,bisect,up] Time: 33 Result: success
+Options: [min,bisect,down] Time: 465 Result: success
+Options: [anti_first_fail,bisect,up] Time: 1608 Result: success
+Options: [max_regret,step,up] Time: 176 Result: success
+Options: [max_regret,bisect,up] Time: 36 Result: success
+Options: [max_regret,bisect,down] Time: 443 Result: success
+Options: [max_regret,middle,up] Time: 177 Result: success
+Options: [max_regret,median,up] Time: 173 Result: success
+
+Big Test:
+Options: [leftmost,step,up]             Time: 8648 Result: success
+Options: [leftmost,bisect,up]           Time: 227 Result: success
+Options: [leftmost,bisect,down]         Time: 36 Result: success
+Options: [leftmost,middle,up]           Time: 8783 Result: success
+Options: [leftmost,median,up]           Time: 8579 Result: success
+Options: [min,bisect,up]                Time: 276 Result: success
+Options: [min,bisect,down]              Time: 46 Result: success
+Options: [anti_first_fail,bisect,up]    Time: 87 Result: success
+Options: [max_regret,step,up]           Time: 7588 Result: success
+Options: [max_regret,bisect,up]         Time: 198 Result: success
+Options: [max_regret,bisect,down]       Time: 32 Result: success
+Options: [max_regret,middle,up]         Time: 7615 Result: success
+Options: [max_regret,median,up]         Time: 7618 Result: success
+
+
+Options that survived:
+
+[leftmost,step,up]         
+[leftmost,bisect,up]       
+[leftmost,bisect,down]     
+[leftmost,middle,up]       
+[leftmost,median,up]       
+[min,bisect,up]            
+[min,bisect,down]          
+[anti_first_fail,bisect,up]
+[max_regret,step,up]       
+[max_regret,bisect,up]     
+[max_regret,bisect,down]   
+[max_regret,middle,up]     
+[max_regret,median,up]     
