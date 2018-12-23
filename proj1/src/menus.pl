@@ -140,8 +140,6 @@ printFirstPlayerMenu:-
         write('*     2-Human First   *'), nl,
         write('***********************'), nl.
 
-discard_new_line:-
-    get_code(_).
 
 invalid:-
     write('Invalid Choice! Press Enter to try again'), nl, waitForKeyPress, fail.

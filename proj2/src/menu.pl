@@ -34,8 +34,8 @@ start:-
     nl,
     (
         X = 1, !, solve(6, 2, 5, [max_regret,bisect,up]), return, start;
-        X = 2, !, solve(41, 7, 8, [max_regret,bisect,down]), return, start;
-        X = 3, !, solve(17, 4, 11, [max_regret,bisect,down]), return, start;
+        X = 2, !, solve(11, 3, 11, [max_regret,bisect,up]), return, start;
+        X = 3, !, solve(41, 7, 8, [max_regret,bisect,down]), return, start;
         X = 4, !, solve, return, start;
         X = 5, true;
         invalid
