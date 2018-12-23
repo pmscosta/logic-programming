@@ -9,7 +9,13 @@ writeResult(Label, Time):-
 
 writeChosen(F, M, E, O):-
     format('First Element: ~w ~t Multiplier: ~w ~t Number of Elements: ~w~n Options: ~w ~n', [F, M, E, O]).
-% - Random play of the Game
+
+/**
+ * solve
+ * 
+ *  Solves a random valid instance of the game
+ * 
+ * */
 solve:-  
     repeat, 
     random(2, 20, Mult), 
@@ -28,7 +34,20 @@ solve:-
     ).
 
 
-% - Starting the game with pre-defined labeling options.
+/**
+ * solve(+First, +Mult, -Elems, +Options)
+ * 
+ *  Solves a specified instance of the game with specific labelling options
+ * 
+ *  @param First - First number
+ *  @param Mult - Multiplier
+ *  @param Elems - Number of elements of the puzzle board
+ *  @param Options - Labbeling options
+ * 
+ * 
+ * ---------------------PEDRO VICIADO EM SOCIAL MEDIA --------------------------
+ * Correto? Elems
+ * */
 solve(First, Mult, Elems, Options):-
     number(Mult), !, number(First), !, number(Elems), !,
     maxValue(First, Mult, Elems, Max),
@@ -41,7 +60,24 @@ solve(First, Mult, Elems, Options):-
 
 
 
-% - Run the game with pre-defined labeling options
+/**
+ * pstrike(+First, +Mult, +Elems, +Max, +ExpList, +Options, -Numbers, -ExecutionTime)
+ * 
+ *  Runs the puzzle solver for a specified instance of the game with specific labelling options
+ * 
+ *  @param First - First number
+ *  @param Mult - Multiplier
+ *  @param Elems - Number of elements of the puzzle board
+ *  @param Max - Maximum number the puzzle numbers can take
+ *  @param ExpList - Valid exponents list
+ *  @param Options - Labbeling options
+ *  @param Numbers - Puzzle board representation
+ *  @param ExecutionTime - Time of execution of the solver
+ * 
+ * 
+ * ---------------------PEDRO VICIADO EM SOCIAL MEDIA --------------------------
+ * Correto?
+ * */
 pstrike(First, Mult, Elems, Max, ExpList, Options, Numbers, ExecutionTime):-
     NumElems is Elems + 1,
     length(Numbers, NumElems),
