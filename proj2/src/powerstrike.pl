@@ -43,10 +43,6 @@ solve:-
  *  @param Mult - Multiplier
  *  @param Elems - Number of elements of the puzzle board
  *  @param Options - Labbeling options
- * 
- * 
- * ---------------------PEDRO VICIADO EM SOCIAL MEDIA --------------------------
- * Correto? Elems
  * */
 solve(First, Mult, Elems, Options):-
     number(Mult), !, number(First), !, number(Elems), !,
@@ -66,7 +62,7 @@ solve(First, Mult, Elems, Options):-
  *  Runs the puzzle solver for a specified instance of the game with specific labelling options
  * 
  *  @param First - First number
- *  @param Mult - Multiplier
+ *  @param Mult - Multiplier/Center Value
  *  @param Elems - Number of elements of the puzzle board
  *  @param Max - Maximum number the puzzle numbers can take
  *  @param ExpList - Valid exponents list
@@ -74,9 +70,6 @@ solve(First, Mult, Elems, Options):-
  *  @param Numbers - Puzzle board representation
  *  @param ExecutionTime - Time of execution of the solver
  * 
- * 
- * ---------------------PEDRO VICIADO EM SOCIAL MEDIA --------------------------
- * Correto?
  * */
 pstrike(First, Mult, Elems, Max, ExpList, Options, Numbers, ExecutionTime):-
     NumElems is Elems + 1,

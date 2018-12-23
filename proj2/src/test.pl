@@ -1,10 +1,6 @@
 :-consult('gamelogic.pl').
 :-use_module(library(timeout)).
 
-
-
-
-
 run_tests:-
     open('output.txt', write, FILE),
     small_test(FILE), 

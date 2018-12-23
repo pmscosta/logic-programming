@@ -18,7 +18,7 @@ number_of_digits(Number, Digits):-
 createExpList([_]).
 
 /**
- * createExpList([+A, -B | -C])
+ * createExpList(+List)
  * 
  * Creates exponents list
  * 
@@ -71,13 +71,9 @@ addConstraints([_], _, _,List, List).
  * 
  *  @param [A, B | C] - Puzzle board
  *  @param Mult - Multiplier
- *  @param ExpList - Valid exponents list
- *  @param ExpAcc - Exponents used
- *  @param Exponents - Exponent list
- * 
- * 
- * ---------------------PEDRO VICIADO EM SOCIAL MEDIA --------------------------
- * Diferença entre ExpList e Exponents
+ *  @param ExpList - Maximum Number exponent list
+ *  @param ExpAcc - Auxliary Exponents used list
+ *  @param Exponents - Used exponents List
  * */
 addConstraints([A, B | C], Mult, ExpList, ExpAcc, Exponents):-
 retractNumber(A, ExpList, SubtractNumber, Exp),
